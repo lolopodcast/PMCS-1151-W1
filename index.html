@@ -150,6 +150,12 @@ const _d = (token) => {
 };
 const _A0 = _e(_SALT, 0), _A1 = _e(_SALT, 1), _A2 = _e(_SALT, 2), _A3 = _e(_SALT, 3);
 
+/* 行動裝置判定：用指標能力，不猜 user-agent。語音導覽的保活策略在手機上要相反。 */
+const IS_TOUCH = (() => {
+  try { return window.matchMedia('(hover: none) and (pointer: coarse)').matches; }
+  catch (e) { return false; }
+})();
+
 const NUM_LEARN = 8;
 const TOTAL   = 1 + NUM_LEARN + 3;
 const IDX_LAB = NUM_LEARN + 1;
@@ -1712,7 +1718,7 @@ function App() {
       code = 'en-GB';
     }
 
-    let i = 0, started = false;
+    let i = 0, started = false, revives = 0;
     const finish = () => { ttsHardReset(); setTtsState('idle'); };
     const speakNext = () => {
       if (i >= chunks.length) { finish(); return; }
@@ -1727,24 +1733,46 @@ function App() {
     speakNext();
     setTtsState('playing');
 
-    /* Chrome 約 15 秒後會自己靜下來：每 8 秒 pause/resume 戳一下 */
-    ttsKeep.current = setInterval(() => {
-      try {
-        if (!speechSynthesis.speaking || speechSynthesis.paused) return;
-        speechSynthesis.pause(); speechSynthesis.resume();
-      } catch (e) {}
-    }, 8000);
+    /* 保活只對桌機 Chrome 有意義：它大約 15 秒後會自己靜下來，pause/resume 戳一下就會醒。
+       但手機（iOS Safari 尤其）相反——由計時器發出的 pause() 不是使用者手勢，
+       resume() 不一定生效，結果就是「唸幾秒就停住」。所以行動裝置一律不裝這個保活。 */
+    if (!IS_TOUCH) {
+      ttsKeep.current = setInterval(() => {
+        try {
+          if (!speechSynthesis.speaking || speechSynthesis.paused) return;
+          speechSynthesis.pause(); speechSynthesis.resume();
+        } catch (e) {}
+      }, 8000);
+    }
 
-    /* 看門狗：引擎三種狀態都不在了就收工，把按鈕還原成播放 */
+    /* 看門狗：引擎三種狀態都不在了，代表它自己停了。
+       但「還有段落沒唸完」和「唸完了」要分開處理——手機在兩段之間常有較長空檔，
+       舊版一律當成結束並 cancel，這也是唸幾秒就停的原因之一。
+       還有剩就重新推一次，真的推不動才收工。 */
     let idle = 0;
+    const IDLE_LIMIT = started ? (IS_TOUCH ? 8 : 3) : (IS_TOUCH ? 40 : 30);
     ttsWatch.current = setInterval(() => {
       try {
         if (speechSynthesis.speaking || speechSynthesis.pending || speechSynthesis.paused) { idle = 0; return; }
       } catch (e) { return; }
       idle += 1;
-      if (idle >= (started ? 3 : 30)) finish();
+      if (idle < (started ? (IS_TOUCH ? 8 : 3) : (IS_TOUCH ? 40 : 30))) return;
+      idle = 0;
+      if (i < chunks.length && revives < 8) { revives += 1; speakNext(); return; }
+      finish();
     }, 800);
   };
+
+  /* 手機切走再切回來時，有些瀏覽器會把語音留在暫停狀態，回前景時推一把 */
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState !== 'visible') return;
+      if (ttsState !== 'playing') return;
+      try { if (speechSynthesis.paused) speechSynthesis.resume(); } catch (e) {}
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => document.removeEventListener('visibilitychange', onVis);
+  }, [ttsState]);
 
   /* ============ 版面 ============ */
   const Stat = ({ v, l }) => (
