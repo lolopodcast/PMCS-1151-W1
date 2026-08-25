@@ -156,6 +156,11 @@ const IS_TOUCH = (() => {
   catch (e) { return false; }
 })();
 
+/* 公開頁自帶的兩份 PDF。放在同一個 repo 的 docs/ 底下，跟頁面一起部署、一起存活。 */
+const DOCS_BASE = 'https://lolopodcast.github.io/PMCS-1151-W1/docs/';
+const WS_PDF  = DOCS_BASE + 'PMCS_Worksheet_W1_20260825.pdf';
+const WIY_PDF = DOCS_BASE + 'PMCS_World-Industry-Yourself_SML_20250816a.pdf';
+
 const NUM_LEARN = 8;
 const TOTAL   = 1 + NUM_LEARN + 3;
 const IDX_LAB = NUM_LEARN + 1;
@@ -391,6 +396,9 @@ zh: {
   m6_a1: '**第一題 · See the World**：從三個張力裡挑兩個，寫出你的立場。不是摘要那三段在講什麼，是寫「你認為會怎樣」。可以很短，但要具體到別人有辦法反對你。',
   m6_a2: '**第二題 · Understand Industry**：挑一個你想去的產業，用第二節那條鏈說明——你挑的那兩個張力，會改掉這個產業的哪一個部門或哪一種職位。想不出來也是一個發現，誠實寫下來。',
   m6_a3: '**第三題 · Shape Yourself**：根據你上面寫的，從這學期開始，你要做的「一件」具體的事是什麼。只准寫一件。「多讀書」「多學技能」不算，那是還沒想清楚的說法。要具體到你下週就能開始做。',
+  m6_print: '想用紙筆寫也可以。把學習單印出來、用筆寫、拍照上傳，跟在 iPad 上直接批註同樣算數——這一份本來就設計成兩種都行，Part A 每一題底下都留了手寫的橫線。',
+  m6_print_label: '學習單 W1（PDF，可列印）',
+  m6_print_desc: 'Part A 的三題就在這一份上，每題下方留有手寫橫線。Part B 是 W2 課堂上小組一起做的部分，這裡先看不用寫。',
   m6_wsnote: '學習單 W1 還有一個 **Part B**，那是 **W2 課堂上小組一起做**的 AI 協作練習——跟自我介紹影片是兩回事，別搞混了。Part A 是你一個人、不用 AI、W1 當天要交；Part B 要等到 W2 進教室才做。',
   m6_partB: '自我介紹影片 · 真實版',
   m6_promise: '這一份不計分、不對全班公開，只有教師看得到。',
@@ -535,7 +543,7 @@ zh: {
   mres_nav: '10. 外部學習資源',
   mres_title: '課前你可以先看的東西',
   mres_desc: '以下都是公開的，不需要通行碼。課程總入口與十二份學習單在 W2 拿到通行碼之後才會開放。',
-  mres_group1: '導論影片',
+  mres_group1: '導論教材（影片與原始講義）',
   mres_group2: '先看終點',
   mres_group3: '第一天的作業會用到',
   mres_group4: '選課前可以先想的',
@@ -761,6 +769,9 @@ en: {
   m6_a1: '**Question one · See the World**: pick two of the three tensions and write your position. Not a summary of those paragraphs — what you think will happen. It can be short, but it must be specific enough that somebody could disagree.',
   m6_a2: '**Question two · Understand Industry**: pick an industry you want to enter and use the chain from section two — say which department or which kind of position your two chosen tensions would change. If you cannot see what would change, that is a finding too; write it down honestly.',
   m6_a3: '**Question three · Shape Yourself**: given what you wrote, name the one concrete thing you will start doing this term. One only. "Read more" and "learn more skills" do not count — those are ideas you have not finished having. It has to be specific enough to start next week.',
+  m6_print: 'Pen and paper works just as well. Print the worksheet, write on it, photograph it and upload — exactly as valid as annotating it on an iPad. It was designed for both: every Part A question has ruled lines underneath it.',
+  m6_print_label: 'Worksheet W1 (printable PDF)',
+  m6_print_desc: 'The three Part A questions, each with ruled lines underneath. Part B is the half your group does together in the W2 class — read it now, write it then.',
   m6_wsnote: 'Worksheet W1 also has a **Part B**, and that one is the AI-assisted exercise your **group does together in the W2 class** — a different thing from the self-introduction video, so do not confuse the two. Part A is yours alone, without AI, due on the day of W1; Part B waits until you are in the W2 room.',
   m6_partB: 'Self-introduction video · the authentic one',
   m6_promise: 'This one is not graded, is not shown to the class, and is seen only by the instructor.',
@@ -905,7 +916,7 @@ en: {
   mres_nav: '10. Learning Resources',
   mres_title: 'What you can look at before class',
   mres_desc: 'Everything below is public and needs no passphrase. The course hub and the twelve worksheets open once you receive the passphrase in W2.',
-  mres_group1: 'Orientation videos',
+  mres_group1: 'Orientation material (videos and the original handout)',
   mres_group2: 'Look at the endpoint',
   mres_group3: 'You will need these on day one',
   mres_group4: 'Worth thinking about before you enrol',
@@ -946,12 +957,18 @@ const RES = [
   { g: 1, label: 'PMCS Course Orientation（導論影片 ①）', url: 'https://youtu.be/RVeT7DyKTYE',
     zh: '課程導論：See the World, Understand Industry, Shape Yourself。中英解說，看完再回來對照前面四節。',
     en: 'Course orientation: See the World, Understand Industry, Shape Yourself. Bilingual; watch it, then come back to the first four sections.' },
-  { g: 1, label: 'W1 導論影片 ②（中英解說）', url: 'https://youtu.be/ZpZ8ql7e3as',
-    zh: '第二支導論影片，中英解說。與 ① 搭配觀看。',
-    en: 'The second orientation video, bilingual. Watch it alongside the first.' },
+  { g: 1, label: '探索世界-產業-自我：大學學習藍圖（中文解說）', url: 'https://youtu.be/ZpZ8ql7e3as',
+    zh: '第二支導論影片，中文解說。把三個層級收攏成一張大學四年的學習藍圖，與 ① 搭配觀看。',
+    en: 'The second orientation video, narrated in Chinese. It pulls the three levels together into a four-year learning blueprint for university. Watch it alongside the first.' },
+  { g: 1, label: '原始講義 · See the World, Understand Industry, Shape Yourself（PDF）', url: 'https://lolopodcast.github.io/PMCS-1151-W1/docs/PMCS_World-Industry-Yourself_SML_20250816a.pdf',
+    zh: '這一頁第 1 到第 4 節所依據的原始教材，中英對照六頁，附三張心智圖。想看完整論述、或想直接參考心智圖畫自己的那一張，讀這一份。',
+    en: 'The source material behind sections 1 to 4 of this page: six bilingual pages with three mind maps. Read it for the full argument, or to work from the mind maps when drawing your own.' },
   { g: 2, label: "LoLo's Daily Brief", url: 'https://lolopodcast.github.io/daily-brief/',
     zh: '教師自己的晨報 Agent，每天早上自動更新。這就是你們期末要做出來的東西的樣子。',
     en: "The instructor's own morning-brief agent, refreshed every morning. This is the shape of what your team builds by the end of term." },
+  { g: 3, label: '學習單 W1（PDF，可列印手寫）', url: 'https://lolopodcast.github.io/PMCS-1151-W1/docs/PMCS_Worksheet_W1_20260825.pdf',
+    zh: 'Part A 的三題就在這一份上。可以列印出來用紙筆寫，拍照上傳；不列印、在 iPad 上直接批註也可以。Part B 是 W2 課堂上小組一起做的部分。',
+    en: 'The three Part A questions live here. Print it and write by hand, then photograph and upload — or annotate it on an iPad instead. Part B is the half your group does together in the W2 class.' },
   { g: 3, label: 'EMI-AI Self-Introduction Practice', url: 'https://lolopodcast.github.io/EMI-AI-Self-Introduction/',
     zh: '自我介紹練習頁：4Q 提詞、內建錄影與錄音工具、CEFR 語言能力對照與自評。正式錄之前先來這裡練一次。',
     en: 'The self-introduction practice page: 4Q prompts, a built-in video and audio recorder, and a CEFR reference and self-check. Rehearse here before recording for real.' },
@@ -1634,7 +1651,7 @@ function App() {
       [1, 2, 3, 4, 5].forEach(n => put(t[`${k}_p${n}`]));
       if (module === 6) {
         put(t.m6_partA); [t.m6_a1, t.m6_a2, t.m6_a3].forEach(put);
-        put(t.m6_wsnote);
+        put(t.m6_print); put(t.m6_wsnote);
         put(t.m6_partB); put(t.m6_promise); put(t.m6_promise_d);
         put(t.m6_b1); put(t.m6_b2);
       }
@@ -1908,6 +1925,11 @@ function App() {
                     <p className="text-[14px] leading-relaxed text-slate-700 dark:text-slate-200"><MD s={x} /></p>
                   </div>
                 ))}
+              </div>
+              {/* 可列印的學習單。用 LinkCard 而不是內文連結，因為 MD 只處理粗體、不處理 markdown 連結 */}
+              <p className="mt-3 text-[15px] leading-relaxed text-slate-700 dark:text-slate-300"><MD s={t.m6_print} /></p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <LinkCard label={t.m6_print_label} url={WS_PDF} desc={t.m6_print_desc} />
               </div>
               {/* Part A 與自介影片是兩份不同的作業，學生最容易在這裡混淆，所以講清楚 */}
               <p className="mt-3 text-[14px] leading-relaxed text-slate-700 dark:text-slate-200
