@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Prof. Shihmin Lo">
+<meta name="description" content="PMCS (EMI) Week 1 — course orientation, the three shifts, and what to hand in on the first day. Semester 1151, Prof. Shihmin Lo, NCNU General Education.">
+<title>PMCS · W1 Orientation — See the World, Understand Industry, Shape Yourself</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js"></script>
+
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'], serif: ['Merriweather','serif'] } } }
+};
+</script>
+
+<style>
+  /* clip 而非 hidden：hidden 會讓元素變成捲動容器，靜默破壞子元素的 position: sticky */
+  html, body { overflow-x: clip; }
+  body { font-family: 'Inter', sans-serif; }
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:translateY(0)} }
+  .animate-fade-in { animation: fadeInUp 0.5s ease-out forwards; }
+  .perspective { perspective: 1000px; }
+  .transform-style-3d { transform-style: preserve-3d; }
+  .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .rotate-y-180 { transform: rotateY(180deg); }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  .dark ::-webkit-scrollbar-thumb { background: #475569; }
+  header, footer, button, [role="button"], .ui-decoration { -webkit-user-select: none; user-select: none; }
+  input, textarea, select { -webkit-user-select: text; user-select: text; }
+  #cw-toast {
+    position: fixed; left: 50%; bottom: 3.5rem; transform: translateX(-50%);
+    background: #004030; color: #D8C3A5; padding: 10px 18px; border-radius: 10px;
+    font-family: Inter, sans-serif; font-size: 13px; letter-spacing: .02em;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35); border: 1px solid rgba(216,195,165,.35);
+    z-index: 9999; opacity: 0; transition: opacity .25s ease;
+    pointer-events: none; max-width: 90vw; text-align: center;
+  }
+  #cw-toast.show { opacity: 1; }
+  @media print { header, footer, #cw-toast { display: none !important; } }
+</style>
+</head>
+<body class="bg-[#f4f4f4] dark:bg-[#121212] text-slate-800 dark:text-slate-200 font-sans selection:bg-[#004030] selection:text-white dark:selection:bg-[#D8C3A5] dark:selection:text-[#004030]">
+<div id="root"></div>
+<div id="cw-toast"></div>
+
+<script>
+/* ============ 前端防禦機制（於 React 掛載前執行） ============ */
+(function () {
+  var ALLOWED = ['lolopodcast.github.io', 'localhost', '127.0.0.1'];
+  var REDIRECT = 'https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo';
+  var host = location.hostname;
+  var ok = (host === '' || host === 'null') ? true : ALLOWED.some(function (d) {
+    return host === d || host.endsWith('.' + d);
+  });
+  if (!ok) {
+    document.body.innerHTML = DOMPurify.sanitize('<div style="text-align:center;padding:60px;font-family:sans-serif"><h1>Access Denied</h1><p>This resource is not authorised on this domain.</p></div>');
+    setTimeout(function () { location.href = REDIRECT; }, 3000);
+    return;
+  }
+  if (window.self !== window.top) {
+    try { window.top.location.href = window.self.location.href; }
+    catch (e) {
+      document.body.innerHTML = DOMPurify.sanitize('<div style="text-align:center;padding:60px;font-family:sans-serif"><h1>Frame Blocked</h1><p>This content cannot be embedded.</p></div>');
+    }
+  }
+})();
+
+/* ============ 版權提示 Toast ============ */
+var COPYRIGHT_MSG = 'Intellectual Property of Prof. Shihmin Lo';
+var _cwToastTimer = null;
+function showCopyrightToast(msg) {
+  var el = document.getElementById('cw-toast');
+  if (!el) return;
+  el.innerHTML = DOMPurify.sanitize('&copy; ' + (msg || COPYRIGHT_MSG));
+  el.classList.add('show');
+  if (_cwToastTimer) clearTimeout(_cwToastTimer);
+  _cwToastTimer = setTimeout(function () { el.classList.remove('show'); }, 2000);
+}
+window.showCopyrightToast = showCopyrightToast;
+
+/* ============ 智慧型右鍵與快捷鍵攔截 ============ */
+document.addEventListener('contextmenu', function (e) {
+  var selection = (window.getSelection() ? window.getSelection().toString() : '').trim();
+  var tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
+  var isForm = (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+  if (isForm) return true;
+  if (selection.length > 0) return true;   /* 有反白 → 允許（查字典 / 複製筆記） */
+  e.preventDefault();
+  showCopyrightToast();
+});
+
+document.addEventListener('keydown', function (e) {
+  var k = (e.key || '').toLowerCase();
+  if (e.key === 'F12') { e.preventDefault(); showCopyrightToast(); return; }
+  if (e.ctrlKey && !e.shiftKey && k === 'u') { e.preventDefault(); showCopyrightToast(); return; }
+  if (e.ctrlKey && e.shiftKey && ['i', 'j', 'c'].indexOf(k) !== -1) { e.preventDefault(); showCopyrightToast(); return; }
+  /* Ctrl+P（列印）與 Ctrl+S（存檔）刻意開放，確保學生可離線複習 */
+});
+
+document.addEventListener('dragstart', function (e) {
+  var tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
+  if (tag === 'IMG' || (e.target.closest && e.target.closest('svg'))) e.preventDefault();
+});
+
+window.safeHTML = function (raw) {
+  try { return DOMPurify.sanitize(String(raw)); }
+  catch (err) { return ''; }
+};
+</script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef, useMemo } = React;
+
+/* ==================== 課程常數（單一事實來源） ====================
+   改期只要改這裡：W1_DATE 一動，全頁的日期、截止時間、倒數全部跟著動。 */
+const W1_DATE   = '2026-09-09';        /* 週三 */
+const W2_DATE   = '2026-09-16';
+const DEADLINE  = '2026-09-09T23:59:00+08:00';
+const CLASS_TIME = '15:30–16:20';
+const CAP       = 36;
+const WEEKS     = 18;
+const CREDITS   = 1;
+const HOURS_OUT = 2;
+
+/* 答案混淆：題庫答案不以明文儲存 */
+const _SALT = 'PMCSW1-2026';
+const _e = (s, n) => {
+  const p = s + ':' + n;
+  let r = '';
+  for (let i = 0; i < p.length; i++) r += String.fromCharCode(p.charCodeAt(i) ^ ((i + 7) * 3 & 0xFF));
+  return btoa(r);
+};
+const _d = (token) => {
+  const dec = atob(token);
+  let r = '';
+  for (let i = 0; i < dec.length; i++) r += String.fromCharCode(dec.charCodeAt(i) ^ ((i + 7) * 3 & 0xFF));
+  return parseInt(r.split(':')[1], 10);
+};
+const _A0 = _e(_SALT, 0), _A1 = _e(_SALT, 1), _A2 = _e(_SALT, 2), _A3 = _e(_SALT, 3);
+
+const NUM_LEARN = 5;
+const TOTAL   = 1 + NUM_LEARN + 3;
+const IDX_LAB = NUM_LEARN + 1;
+const IDX_RES = NUM_LEARN + 2;
+const IDX_ANA = NUM_LEARN + 3;
+
+/* ==================== SVG Icons（全 inline，不依賴圖示庫） ==================== */
+const Ic = (p) => ({size=18, cls=''}) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={cls}>{p}</svg>);
+
+const IconMenu       = Ic(<><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>);
+const IconX          = Ic(<><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>);
+const IconMoon       = Ic(<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>);
+const IconSun        = Ic(<><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></>);
+const IconPlay       = Ic(<polygon points="5 3 19 12 5 21 5 3"/>);
+const IconPause      = Ic(<><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></>);
+const IconSquare     = Ic(<rect x="4" y="4" width="16" height="16" rx="2"/>);
+const IconHome       = Ic(<><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></>);
+const IconGlobe      = Ic(<><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></>);
+const IconChevronRight = Ic(<polyline points="9 18 15 12 9 6"/>);
+const IconChevronUp  = Ic(<polyline points="18 15 12 9 6 15"/>);
+const IconArrowRight = Ic(<><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></>);
+const IconExternal   = Ic(<><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></>);
+const IconBookOpen   = Ic(<><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>);
+const IconAlert      = Ic(<><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></>);
+const IconCheck      = Ic(<><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></>);
+const IconActivity   = Ic(<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>);
+const IconFlask      = Ic(<><path d="M9 2v6.5L3.5 18A2 2 0 0 0 5.2 21h13.6a2 2 0 0 0 1.7-3L15 8.5V2"/><line x1="8" y1="2" x2="16" y2="2"/><line x1="7" y1="15" x2="17" y2="15"/></>);
+const IconTrending   = Ic(<><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></>);
+const IconPen        = Ic(<><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><line x1="2" y1="2" x2="9.6" y2="9.6"/><circle cx="11" cy="11" r="2"/></>);
+const IconMic        = Ic(<><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></>);
+const IconSearch     = Ic(<><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></>);
+const IconClipboard  = Ic(<><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></>);
+const IconClock      = Ic(<><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></>);
+
+/* 模組圖示對照（漢堡目錄與 H2 標題共用同一組） */
+const MOD_ICON = [IconHome, IconTrending, IconPen, IconMic, IconSearch, IconClipboard, IconFlask, IconGlobe, IconActivity];
+
+/* ==================== 雙語字典 ==================== */
+const dict = {
+zh: {
+  brand: 'PMCS',
+  title: 'W1 課程導論',
+  subtitle: 'See the World, Understand Industry, Shape Yourself',
+  nav_modules: '單元目錄', nav_prev: '上一單元', nav_next: '下一單元', nav_home: '首頁',
+  key_terms: '關鍵專有名詞', flip_prompt: '點擊翻轉',
+  flip_status: '已讀 {read} / 已顯示 {shown} / 總計 {total}',
+  flip_next: '下一組', flip_retry: '重新開始',
+  audio_read: '語音導覽',
+  quiz_title: '模組知識檢定',
+  quiz_status: '答對 {correct} / 已答 {answered} / 總計 {total}',
+  quiz_next: '下一組', quiz_retry: '重新測驗', submit: '提交答案',
+  correct: '正確', incorrect: '錯誤', explanation: '解析',
+  overview_label: 'Overview 概述',
+  highlights_label: 'Highlights 重點',
+  deep_dive_label: 'Deep Dive 深入解析',
+  wrapup_label: 'Wrap-up 總結',
+
+  /* ---------- M0 執行概要 ---------- */
+  m0_nav: '0. 這門課在做什麼',
+  m0_title: '這門課在做什麼，以及你今天要決定什麼',
+  m0_intro: '這是一門通識選修，一學分，每週三下午 50 分鐘，限 36 人，全英授課。十八週結束時，你所在的那一組會有一個網址——一個每天早上自己更新、任何人都打得開的職缺分析晨報，主題是「你想去的那個產業，現在到底在找什麼樣的人」。它不是一份報告，是一個真的會跑的東西：網址打得開、執行紀錄看得到、換一個產業重跑得起來。這門課的每一週都在往那個終點推進。但在你決定要不要留下來之前，有件事必須先講清楚：這門課每週佔用你的不只是課堂上那 50 分鐘，還有課外至少兩小時，而且你需要一個付費的 AI 方案。這一頁把全部條件、第一天要交的東西、以及沒交會發生什麼，全部攤開來寫。看完再決定，對你我都好。',
+  m0_why: '為什麼第一頁就先講條件？',
+  m0_why_desc: '因為這門課限 36 人，而通識課是排志願抽籤的。你如果第五週才發現自己撐不下去，退掉的那個名額已經沒有人能遞補了——那個位子本來可以給一個真的想上的人。所以我把門檻寫在最前面，不藏在最後一頁。',
+  m0_stats: [
+    { val: '18', label: '週' },
+    { val: '1', label: '學分' },
+    { val: '36', label: '人上限' },
+    { val: '2 hr+', label: '每週課外' }
+  ],
+  m0_modules: [
+    { num: '01', title: '三個轉變', desc: '不是多了一個新產業，是每個產業都要重做一次' },
+    { num: '02', title: '手寫三題', desc: '為什麼第一份作業不准用 AI' },
+    { num: '03', title: '一分鐘自介', desc: '4Q、那句保證，以及當天 23:59' },
+    { num: '04', title: '三條查證原則', desc: '這一頁不告訴你現在怎麼樣，告訴你怎麼查' },
+    { num: '05', title: '這門課怎麼運作', desc: '門檻、節奏、加簽與遞補、W2 之後拿到什麼' }
+  ],
+  m0_start: '開始看 →',
+  m0_dday_label: '第一份作業截止',
+  m0_endpoint: '先看終點',
+  m0_endpoint_desc: '這是教師自己的晨報 Agent，每天早上自動更新。學期末你們每一組都會有一個這樣的網址，主題換成你們自己選的產業。現在就可以打開看。',
+
+  /* ---------- M1 三個轉變 ---------- */
+  m1_nav: '1. 三個轉變',
+  m1_title: '三個轉變：不是多了一個新產業',
+  m1_overview: '談 AI 對工作的影響，最常見的講法是「又出現了一個新產業」。這個講法會害你做錯決定。真正在發生的事情是：每一個既有的產業，都要把自己重做一次。你想去的那個產業不會消失，它會變形——而你要判斷的是，變形之後你原本準備的那套還算不算數。下面三個張力就是要你判斷這件事。它們沒有標準答案，這一頁也不會給你答案。',
+  m1_highlights: ['AI 代理人', '實體 AI', '職務變形', 'smart everything', '典範轉移'],
+  m1_p1: '先把傘狀命題講清楚：「應用場景智慧化」聽起來像行銷詞，但它描述的是一件很具體的事——製造、零售、醫療、物流、金融、農業，每一個都在把自己的流程換成由 AI 參與決策的版本。這不是在旁邊多開一個「AI 產業」，而是既有產業的內部重做。所以問題不是「我要不要轉行去做 AI」，而是「我想去的那一行，重做的部分在哪裡，那部分需要什麼樣的人」。',
+  m1_p2: '張力一：誰在買東西？過去一百年，商業模式的底層假設是「人會來」——來逛店、來看廣告、來下載 App、來比價。行銷、品牌、通路的價值全部建立在這個假設上。當比價、下單、續約、退換貨都由 AI 代理人代勞，人不再親自逛，那麼品牌溢價還存在嗎？通路還能收上架費嗎？廣告要投放給誰看——給人，還是給代理人？你自己就是消費者，你先想想你已經有多少決定其實不是你自己做的。',
+  m1_p3: '張力二：哪一種工作會先被改？前幾年流行的說法是「AI 先取代坐辦公室的，動手的工作還安全」。無人載具和人形機器人讓這個安慰失效了——當 AI 走出螢幕、有了身體，倉儲、配送、巡檢、清潔、部分照護都進入可自動化的範圍。但這不等於「什麼都會被取代」。真正的問題是：在一個機器能動也能想的環境裡，什麼樣的能力反而變得更貴？你的答案會直接影響你大學四年要練什麼。',
+  m1_p4: '張力三：我想做的那個職位，還會長成那樣嗎？產品經理過去的工作是寫規格、排優先順序、交給工程團隊去實作。現在有一種角色叫 FDE（Forward Deployed Engineer，前進部署工程師）：帶著產品直接進客戶現場，當場理解問題、當場改、當場交付，不等下一個開發週期。這個角色正在往 PM 與 PjM 的地盤擴張。如果你的志願是「當產品經理」，你要想的是——你準備的是舊版本的那個職位，還是新版本的？',
+  m1_p5: '這三個張力放在第一週，不是要你變成專家。是因為第一份作業要你「表態」，不是要你「複述」。你可以完全答錯，但你必須有立場——因為到了第十六週，你會把今天寫的東西拿出來重看一次，那時候有沒有進步，取決於今天有沒有留下一個夠具體、夠可以被推翻的說法。',
+  m1_svg_cap: '三個張力的關係：一個共同前提，三個不同的著力點',
+  m1_terms: [
+    { front: 'AI 代理人 · AI Agent', back: '不只回答問題，還能代替你執行多步驟任務的 AI：查資料、比價、下單、追蹤、回報。它把「人親自操作」這個假設從商業模式裡拿掉。' },
+    { front: '實體 AI · Physical AI', back: '有身體的 AI——人形機器人、無人載具、自動化倉儲設備。差別在於它能改變實體世界的狀態，不只是產出文字或影像。' },
+    { front: 'FDE · Forward Deployed Engineer', back: '前進部署工程師。帶著產品直接進客戶現場，當場理解、當場修改、當場交付，不等下一個開發週期。正在往 PM 與 PjM 的職務範圍擴張。' },
+    { front: '典範轉移 · Paradigm Shift', back: '不是原本的做法變快變好，而是「大家對於什麼叫做正常」的那個共識整個換掉。判準是：舊方法的效率再高也追不上。' },
+    { front: 'K / S / A', back: 'Knowledge 知識、Skills 技能、Attitude 態度。這門課用來拆解職缺要求的架構——期末的晨報 Agent 就是在做這件事。' },
+    { front: 'smart everything', back: '智慧製造、智慧零售、智慧醫療、智慧城市⋯⋯共同點不是加了什麼新東西，而是既有流程被換成由 AI 參與決策的版本。' }
+  ],
+  m1_wrapup: '這一節不要求你答對。它要求你在三個張力裡至少挑兩個，寫出一個「有可能被推翻」的說法——不是「AI 會改變很多事」這種沒有人會反對的話，而是具體到你自己願意為它辯護的程度。有立場才有進步的空間；沒有立場，十六週後你會發現沒有東西可以對照。',
+  m1_q: [
+    { q: '「不是多了一個新產業，是每個產業都要重做一次」這句話，最主要在提醒你什麼？', opts: ['應該趕快轉行去做 AI 相關工作', '你想去的產業不會消失，但會變形，要判斷變形的部分在哪裡', 'AI 產業的薪水比較高', '傳統產業即將全部消失'], ans: _A1, exp: '重點是「既有產業內部的重做」，所以問題是「我那一行重做的部分在哪裡」，不是「要不要轉行」。' },
+    { q: '張力一（誰在買東西）真正在動搖的，是哪一個長久以來的假設？', opts: ['消費者會追求最低價', '人會親自來逛、來看、來比價', '品牌需要投放廣告', '通路一定要有實體店面'], ans: _A1, exp: '行銷、品牌、通路的價值全部建立在「人會來」這個假設上。代理人代勞之後，這個前提鬆動了。' },
+    { q: '關於「實體 AI」，這一節的說法是什麼？', opts: ['所有動手的工作都會被取代', '它讓「動手的工作比較安全」這個說法失效，但真正的問題是什麼能力反而變貴', '人形機器人短期內不會有影響', '只有製造業會受到影響'], ans: _A1, exp: '課文明確反對「什麼都會被取代」的推論，要問的是「什麼能力反而變得更貴」。' },
+    { q: 'FDE（Forward Deployed Engineer）與傳統 PM 最大的差別是？', opts: ['FDE 薪水比較高', 'FDE 不需要懂產品', 'FDE 帶著產品進客戶現場當場改、當場交付，不等下一個開發週期', 'FDE 只在新創公司才有'], ans: _A2, exp: '差別在交付方式與節奏：現場理解、現場修改、現場交付。' },
+    { q: '為什麼第一份作業要你「表態」而不是「複述」？', opts: ['因為表態比較好評分', '因為第十六週要拿今天的說法回頭對照，沒有立場就沒有東西可以對照', '因為老師想知道你的政治立場', '因為複述容易被抓抄襲'], ans: _A1, exp: '這是「之前／之後」的設計：今天留下一個夠具體、可以被推翻的說法，期末才看得出有沒有進步。' }
+  ],
+
+  /* ---------- M2 手寫三題 ---------- */
+  m2_nav: '2. 手寫三題',
+  m2_title: 'Part A：手寫三題，不准用 AI',
+  m2_overview: '這門課的第一份書面作業，是三題手寫。用 iPad 或紙筆都可以，寫完拍一張清楚的照片上傳 Moodle。這三題延續這份學習單原本的骨架——See the World、Understand Industry、Shape Yourself——但問法換了，因為刺激物換了。',
+  m2_highlights: ['手寫', '不用 AI', '三題', '之前的快照'],
+  m2_p1: '第一題 · See the World：從上一節的三個張力裡挑兩個，寫出你的立場。不是摘要那三段在講什麼，是寫「你認為會怎樣」。可以寫得很短，但要具體到別人有辦法反對你。',
+  m2_p2: '第二題 · Understand Industry：挑一個你現在想去的產業（食品、半導體、時尚、金融、遊戲、醫療⋯⋯任何一個都行）。說明你挑的那兩個張力，會改掉這個產業的哪一塊。如果你想不出來會改哪裡，那也是一個發現——把它誠實寫下來。',
+  m2_p3: '第三題 · Shape Yourself：根據你上面寫的，從這學期開始，你要做的「一件」具體的事是什麼。只准寫一件。寫「多讀書」「多學技能」不算，那是還沒想清楚的說法。要寫到你下週就能開始做的程度。',
+  m2_p4: '為什麼要手寫、為什麼不准用 AI？兩個理由，都跟你有關。第一，這是一張「之前」的快照。第十六週你會把今天這張紙拿出來重看，那時候的對照才有意義——如果今天這張紙是 AI 寫的，你對照的是 AI 的進步，不是你的。第二，這門課後面十七週幾乎每一份作業都會用 AI，而且會用得很深。正因為如此，第一份作業必須先讓你看清楚：在完全沒有外援的時候，你腦子裡到底有什麼。這是基準線，不是懲罰。',
+  m2_p5: '手寫還有一個很實際的作用：它讓你慢下來。用鍵盤打字，你會不自覺地寫出那種通順但空洞的句子；用筆寫，你會因為懶得寫廢話而自動變得具體。這不是玄學，你自己試一次就知道。',
+  m2_terms: [
+    { front: '為什麼手寫？', back: '慢下來，避免寫出通順但空洞的句子；同時產生一張無法被 AI 代筆的「之前」快照。' },
+    { front: '為什麼不准用 AI？', back: '第十六週要拿今天的東西回頭對照。如果今天是 AI 寫的，你對照到的是 AI 的進步，不是你的。' },
+    { front: '「一件」具體的事', back: '第三題只准寫一件，而且要具體到下週就能開始做。「多讀書」「多學技能」是還沒想清楚的說法。' },
+    { front: '可以被反對', back: '好的立場的判準：別人有辦法不同意你。無人反對的說法（例如「AI 會改變很多事」）等於沒有說。' }
+  ],
+  m2_wrapup: '三題不必寫長，但必須是你自己的。寫得短而具體，遠好過寫得長而安全。這份作業不會用「答得對不對」評分——它評的是你有沒有真的想過。',
+  m2_q: [
+    { q: 'Part A 三題的繳交方式是？', opts: ['用 Google 表單線上填寫', '手寫（iPad 或紙筆）後拍照上傳 Moodle', '打字成 Word 檔上傳', '課堂上口頭回答'], ans: _A1, exp: '手寫、拍清楚的照片、上傳 Moodle。' },
+    { q: '第三題「Shape Yourself」要求你寫幾件事？', opts: ['三件', '五件', '一件，而且要具體到下週就能開始', '愈多愈好'], ans: _A2, exp: '只准寫一件，且必須具體到下週就能開始做。' },
+    { q: '這一節說「好的立場」的判準是什麼？', opts: ['引用愈多資料愈好', '別人有辦法不同意你', '跟老師的看法一致', '字數愈多愈好'], ans: _A1, exp: '無人會反對的說法等於沒有說。要具體到別人能反對。' },
+    { q: '為什麼第一份作業不准用 AI？', opts: ['因為這門課反對使用 AI', '因為要當作「之前」的快照，第十六週回頭對照的才會是你自己的進步', '因為 AI 寫的內容不準確', '因為怕學生作弊'], ans: _A1, exp: '這門課後面幾乎每份作業都會用 AI，用得很深。第一份不用，是為了留下基準線。' }
+  ],
+
+  /* ---------- M3 一分鐘自介 ---------- */
+  m3_nav: '3. 一分鐘自介',
+  m3_title: '一分鐘自我介紹：真實版',
+  m3_overview: 'W1 當天你還要交第二樣東西：一段一分鐘的英文自我介紹影片，自己講，不用 AI 幫你寫稿。截止時間是當天 23:59，上傳指定的 Moodle 作業區。這一份的重量和手寫那三題一樣——它是你英文口說的「之前」快照。',
+  m3_highlights: ['一分鐘', '英文', '不用 AI 寫稿', '當天 23:59'],
+  m3_promise: '這一份不計分、不對全班公開，只有教師看得到。',
+  m3_promise_d: '你不必講得流利，不必背稿，不必重錄十次。講得結巴、停頓、想不到字都沒關係——那正是「之前」該有的樣子。W2 課後你會用 AI 協作一份講稿再錄一次，兩份放在一起，差距就是這門課給你的第一個具體證據。所以第一份愈真實，這個證據愈有價值。',
+  m3_p1: '講什麼？用 4Q 這四個問題來想，不必四題都講滿，一分鐘講得完的份量就好：① 個人特質、興趣、家庭與成長背景；② 課外經歷——打工、實習、競賽、社團、志工；③ 為什麼選這門課、你的目標是什麼；④ 你現在最需要什麼樣的協助。',
+  m3_p2: '第③題和第④題其實對教師最有用。全班三十幾個人來自不同學院不同年級，我需要知道你是誰、想要什麼、卡在哪裡，才有辦法在後面十七週給你對的東西。這兩題請認真講。',
+  m3_p3: '怎麼錄？手機直接錄影就可以，不需要任何設備或剪輯。光線讓人看得清楚、聲音收得到就夠了。課程的自我介紹練習頁有內建的錄影與錄音工具、4Q 提詞，還有 CEFR 語言能力對照，可以先去那裡練一次再正式錄。連結在「外部學習資源」那一頁。',
+  m3_p4: '沒有在 23:59 前交會怎樣？我會建議你盡速退選，TA 也會通知你的系辦。這聽起來很硬，但理由不是懲罰——通識課是排志願抽籤的，這門課限 36 人，你的名額後面有人在排隊等遞補。你如果第一份最基本的作業就沒有交，那個位子留給真的想上的人比較好，而且愈早釋出，遞補的人愈來得及跟上進度。',
+  m3_p5: '如果你是選課系統遞補進來的、W1 那天不在教室，一樣要交這兩份東西（手寫三題與真實版影片），時間是 W2 上課之前。如果你是想找教師現場加簽的，這兩份也請先準備好——加簽與否由教師綜合判斷。',
+  m3_terms: [
+    { front: '4Q', back: '個人特質與背景／課外經歷／選課動機與目標／最需要的協助。四個引導問題，不必每題都講滿。' },
+    { front: '為什麼是「真實版」？', back: '不寫稿、不用 AI，就是要留下你現在的英文口說樣貌。W2 課後的 AI 協作版拿來對照，差距就是證據。' },
+    { front: '不計分、不公開', back: '第一版只有教師看得到，不對全班公開，也不計分。講得結巴完全沒關係。' },
+    { front: '當天 23:59', back: 'W1 上課當天午夜前，上傳指定的 Moodle 作業區。逾時者建議盡速退選，以維護遞補者的權益。' },
+    { front: 'CEFR', back: '歐洲共同語言參考架構，A1 到 C2 六級。本課要求 B1 以上，自我介紹練習頁有對照與自評。' }
+  ],
+  m3_wrapup: '這一份的重點是「有交」，不是「講得好」。它是基準線，不是考試。真正被評的那一次在第十六週，那時候你會很慶幸自己今天留下了一份誠實的版本。',
+  m3_q: [
+    { q: '第一版（真實版）自我介紹影片的長度與繳交期限是？', opts: ['三分鐘，W2 上課前', '一分鐘，W1 當天 23:59', '五分鐘，學期末', '不限長度，隨時可交'], ans: _A1, exp: '一分鐘，W1 上課當天 23:59 前上傳 Moodle。' },
+    { q: '關於第一版影片，下列何者正確？', opts: ['會在課堂上播放給全班看', '不計分、不對全班公開，只有教師看得到', '佔學期成績 10%', '需要用 AI 先寫好講稿'], ans: _A1, exp: '不計分、不公開、只有教師看得到——所以講得結巴沒關係。' },
+    { q: '沒有在期限前繳交，這一頁說會發生什麼？', opts: ['扣平時分數', '建議盡速退選，TA 並通知系辦，以維護遞補者權益', '沒有任何影響', '改成口頭補做'], ans: _A1, exp: '理由是通識課排志願抽籤、限額 36 人，愈早釋出名額，遞補者愈來得及跟上。' },
+    { q: '如果你是遞補進來、W1 沒到教室的學生，該怎麼辦？', opts: ['不必補交', 'W2 上課前補交手寫三題與真實版影片', '等到期末一起交', '只要交影片就好'], ans: _A1, exp: '兩份都要補，時間是 W2 上課之前。' },
+    { q: '4Q 裡對教師最有用、請你認真講的是哪兩題？', opts: ['個人特質與課外經歷', '選課動機與目標、最需要的協助', '家庭背景與興趣', '打工經驗與社團'], ans: _A1, exp: '教師需要知道你要什麼、卡在哪裡，才有辦法在後面十七週給對的東西。' }
+  ],
+
+  /* ---------- M4 三條查證原則 ---------- */
+  m4_nav: '4. 三條查證原則',
+  m4_title: '這一頁不告訴你現在怎麼樣',
+  m4_overview: '你可能已經注意到：前面談三個轉變的時候，我沒有給你任何一家公司的名字、任何一款機器人、任何一個製程數字。這是刻意的。這一頁不告訴你現在怎麼樣，它告訴你怎麼查——因為到你畢業那年，我現在寫下的任何具體數字都已經過期了。',
+  m4_highlights: ['看日期', '找一手來源', '找反對意見'],
+  m4_p1: '第一條 · 看日期。任何一則關於 AI 的說法，先找它是什麼時候寫的。這個領域六個月就換一輪，一篇兩年前的分析可能整段前提都不成立了。沒有標日期的內容，預設當作不可信。這一條看起來太簡單，但它能濾掉你會遇到的大半垃圾。順帶一提，AI 本身也有這個問題——它的訓練資料有截止日，它不會主動告訴你它的認知停在哪一天。',
+  m4_p2: '第二條 · 找一手來源。你看到的多數說法是二手、三手甚至五手的轉述。每轉一手就掉一點限制條件，掉到最後就變成「研究顯示 AI 將取代 40% 工作」這種你完全不知道怎麼來的句子。往回找：誰做的、樣本是什麼、定義怎麼下的。找不到一手來源，就當作那個說法還沒成立。',
+  m4_p3: '第三條 · 找反對意見。如果你查完一個題目，看到的全部是同一個方向的說法，那不是因為這件事沒有爭議，是因為你的搜尋方式只找得到同一種答案。主動去找「不同意的人怎麼說」——不是為了公平，是因為反對意見通常會直接告訴你這個論點最脆弱的地方在哪裡。你要判斷的是強度，不是聲量。',
+  m4_p4: '為什麼第一週就講這個？因為這門課後面會大量使用 AI，而 AI 最擅長的就是產出「看起來很有道理、日期不明、來源模糊、沒有反方」的內容。這三條原則是你之後每一週都會用到的過濾器。到了第十週我們談 Context Engineering 的時候，你會發現這三條就是它的雛形。',
+  m4_terms: [
+    { front: '看日期', back: 'AI 領域六個月換一輪。沒有標日期的內容，預設不可信。AI 本身也有訓練資料截止日，它不會主動告訴你。' },
+    { front: '找一手來源', back: '每轉述一手就掉一些限制條件。往回找：誰做的、樣本多大、定義怎麼下。找不到就當作還沒成立。' },
+    { front: '找反對意見', back: '全部同一個方向，通常代表你的搜尋方式有偏。反對意見會直接指出論點最脆弱的地方。' },
+    { front: '強度不是聲量', back: '一個說法被講很多次，跟它站得住腳，是兩件不同的事。' }
+  ],
+  m4_wrapup: '這三條不是學術規範，是自保工具。你在這門課裡查到的每一個說法、AI 給你的每一段回答，都可以用這三條先過一遍。過不了的，先別拿去寫作業。',
+  m4_q: [
+    { q: '為什麼這一頁刻意不給具體的公司名稱與數字？', opts: ['因為老師不知道', '因為具體資訊會過期，這一頁要教的是怎麼查', '因為怕有版權問題', '因為學生看不懂'], ans: _A1, exp: '到你畢業那年，現在寫下的具體數字都已經過期了。方法比答案耐久。' },
+    { q: '第一條原則「看日期」為什麼對 AI 主題特別重要？', opts: ['因為新聞都會標日期', '因為這個領域約六個月換一輪，兩年前的分析前提可能已不成立', '因為日期可以用來排序', '因為老師要檢查'], ans: _A1, exp: '而且 AI 本身也有訓練資料截止日，不會主動告訴你它的認知停在哪一天。' },
+    { q: '「找一手來源」要對抗的問題是什麼？', opts: ['資料太多看不完', '每轉述一手就掉一些限制條件，最後變成無法追溯的句子', '一手來源比較便宜', '二手來源都是假的'], ans: _A1, exp: '要往回找：誰做的、樣本是什麼、定義怎麼下的。' },
+    { q: '如果你查一個題目，看到的全是同一個方向的說法，最該做什麼？', opts: ['直接採用，因為有共識', '主動去找反對意見，因為可能是搜尋方式造成的偏差', '換一個題目', '相信最多人講的那個'], ans: _A1, exp: '反對意見通常會直接指出這個論點最脆弱的地方。要判斷強度，不是聲量。' }
+  ],
+
+  /* ---------- M5 這門課怎麼運作 ---------- */
+  m5_nav: '5. 這門課怎麼運作',
+  m5_title: '門檻、節奏，與你會拿到什麼',
+  m5_overview: '這一節把所有條件寫在同一個地方。看完你就有足夠的資訊決定要不要留下來——這正是這一頁存在的目的。',
+  m5_highlights: ['四個門檻', '每週節奏', '加簽與遞補', 'W2 之後'],
+  m5_gate: '四個門檻，缺一個就會很辛苦',
+  m5_gates: [
+    { t: '每週課外至少 2 小時', d: '課堂只有 50 分鐘，真正的工作在課外：個人閱讀與學習單約 40–50 分鐘、小組討論約 40 分鐘、彙整約 20 分鐘。這門課只有 1 學分，但它要的時間是 3 學分的規格，這點必須先講明白。' },
+    { t: '需自備付費 AI 方案', d: 'Claude、ChatGPT、Gemini 擇一即可，組員之間可以互相支援。免費方案在前幾週勉強夠用，但到第十週開始建置期末專案時會卡住。' },
+    { t: '全英授課，CEFR B1 以上', d: '上課、教材、作業、簡報都是英文。B1 是門檻不是目標——這門課本身就是拿來把英文練上去的，但你要接受一開始會比較吃力。' },
+    { t: '第一份作業要手寫，且不准用 AI', d: '如果你對「手寫」這件事本身有強烈抗拒，這門課後面還有很多類似的要求，可以先想清楚。' }
+  ],
+  m5_rhythm: '每週的節奏',
+  m5_rhythm_d: '從上一週三下課算起到本週二 23:59，你有六天：自己讀當週必讀、自己填學習單的個人段落、小組討論收攏成一份、週二晚上前上傳 Moodle。週三上午助教彙整、教師看完決定當天要打哪裡，下午 50 分鐘就只做三件事——教師示範、兩組簡報、卡關診斷。所以課堂不是用來聽課的，是用來解決你課外做不出來的地方。',
+  m5_add: '加簽與遞補',
+  m5_add_1: '選課系統遞補上的同學：請在 W2 上課前補交手寫三題與一分鐘真實版影片。助教會追蹤。',
+  m5_add_2: '想找教師現場加簽的同學：請先把那兩份準備好，加簽與否由教師綜合判斷。',
+  m5_after: 'W2 之後你會拿到什麼',
+  m5_after_d: '第二週上課時會發給你課程總入口的通行碼。那裡有十八週完整的教材導航、十二份互動學習單、期末專案規格、評量與繳交規則、AI 使用與資料倫理聲明，以及「SDL 學習夥伴」的安裝說明——那是一份課程專用的指示檔，會把你的 AI 變成會反問你的學習夥伴。這一頁看到的只是入口，不是全部。',
+  m5_p1: '關於成績：這門課的評分重心不在期末考，而在每週的學習單、小組簡報、以及期末專案的驗收。細節在通行碼後面的入口頁，但精神可以先講——這門課評的是「你做出了什麼、能不能重跑」，不是「你背了什麼」。',
+  m5_p2: '關於分組：第二週分組，會刻意混合科系與年級。這門課是通識，教室裡會同時有資工系大四和中文系大一，而期末專案剛好需要不同背景的人湊在一起——需要有人問對問題，也需要有人把東西做出來。每一組會確保至少有一位對工具操作有興趣或經驗的同學。如果你不會寫程式，你不是來墊底的；如果你會，你不是來當工具人的。',
+  m5_terms: [
+    { front: '1 學分，3 學分的時間', back: '課堂 50 分鐘，課外至少 2 小時。這是課綱明訂的預期投入，先算清楚再決定。' },
+    { front: '付費 AI 方案', back: 'Claude / ChatGPT / Gemini 擇一，組員可互相支援。免費方案到第十週建置期末專案時會卡住。' },
+    { front: 'SDL 學習夥伴', back: '課程專用的指示檔，把你的 AI 變成會反問你的學習夥伴，並產出可繳交的學習知識庫。W2 拿到通行碼後安裝。' },
+    { front: '混合編組', back: '刻意混科系、混年級。期末專案需要有人問對問題，也需要有人把東西做出來。' },
+    { front: '課堂 = 除錯門診', back: '課堂 50 分鐘做的是教師示範、兩組簡報、卡關診斷，不是從頭講課。真正的學習在課外。' }
+  ],
+  m5_wrapup: '看到這裡，你手上的資訊已經足夠了。這門課要的東西很明確，也不輕鬆，但十八週後你會有一個真的在跑的東西，和一份能證明自己進步的紀錄。如果這聽起來像你要的，W1 見；如果不是，請盡早把名額讓給排隊的人——這對你我都是好事。',
+  m5_q: [
+    { q: '這門課每週預期的課外投入時間是？', opts: ['30 分鐘', '至少 2 小時', '5 小時以上', '沒有要求'], ans: _A1, exp: '1 學分的課，卻是 3 學分的時間規格：個人閱讀與學習單、小組討論、彙整。' },
+    { q: '週三下午那 50 分鐘主要用來做什麼？', opts: ['教師從頭講授當週內容', '教師示範、兩組簡報、卡關診斷', '考試與小考', '自習與寫作業'], ans: _A1, exp: '課堂是除錯門診，不是講課。真正的工作在課外那六天。' },
+    { q: '課程總入口的通行碼什麼時候發？', opts: ['W1 上課時', 'W2 上課時', '學期中', '寄到信箱'], ans: _A1, exp: 'W2 上課時發給確定修課的同學。這一頁只是入口，不是全部。' },
+    { q: '關於分組，這門課的做法是？', opts: ['自由選組', '按系所分組', '刻意混合科系與年級，且每組至少一位對工具操作有興趣或有經驗者', '隨機分組'], ans: _A2, exp: '期末專案需要不同背景：有人問對問題，有人把東西做出來。' },
+    { q: '免費 AI 方案大約會在什麼時候開始不夠用？', opts: ['第一週就不夠', '第十週開始建置期末專案時', '整學期都夠用', '期末考前'], ans: _A1, exp: '前幾週勉強夠，第十週開始建置晨報 Agent 時會卡住。' }
+  ],
+
+  /* ---------- Lab ---------- */
+  mlab_nav: '6. 互動實驗室',
+  mlab_title: '四個小工具，幫你今天做決定',
+  mlab_desc: '這四個工具都在你自己的瀏覽器裡跑，不會傳到任何地方，也不會留下你的姓名或學號。用完關掉就沒了。',
+  mlab_labs: [
+    { title: '我做得到嗎？', desc: '四個門檻逐一誠實勾選，看看這門課現在適不適合你。沒有標準答案，只有誠實的答案。' },
+    { title: '距離截止還有多久', desc: 'W1 當天 23:59 的即時倒數。時間感比提醒有用。' },
+    { title: '一分鐘計時 + 4Q 提詞', desc: '按下開始，六十秒倒數，旁邊有 4Q 提詞。正式錄影前先練兩次。' },
+    { title: '三條原則練習', desc: '拿幾個真實會遇到的說法，用看日期／找一手來源／找反對意見過一遍。' }
+  ],
+  lab1_title: '我做得到嗎？',
+  lab1_hint: '誠實勾選，這個結果只有你看得到。',
+  lab1_items: [
+    '我每週能挪出至少 2 小時在課外（不含上課的 50 分鐘）',
+    '我願意且能夠自備一個付費的 AI 方案（或與組員共用）',
+    '我可以接受整學期的上課、教材、作業、簡報都是英文',
+    '我願意在第一份作業手寫，而且不用 AI',
+    '我願意每週和小組討論，不是自己做完就算'
+  ],
+  lab1_r5: '五項全中。這門課就是為你設計的，W1 見。',
+  lab1_r34: '中了三到四項。可以修，但沒中的那幾項請先想清楚怎麼解決——多半不是能力問題，是時間安排問題。',
+  lab1_r12: '只中一到兩項。建議先不要。這不是說你不行，是說這學期的條件可能不對，把名額讓給排隊的人比較好。',
+  lab1_r0: '一項都沒中。這門課現在不適合你，這是很有用的資訊，不是壞消息。',
+  lab1_count: '符合 {n} / 5 項',
+  lab2_title: '距離第一份作業截止',
+  lab2_sub: 'W1 當天 23:59（台北時間）',
+  lab2_d: '天', lab2_h: '小時', lab2_m: '分', lab2_s: '秒',
+  lab2_over: '已經截止了。如果你是遞補進來的，你的期限是 W2 上課前。',
+  lab3_title: '一分鐘計時 + 4Q 提詞',
+  lab3_hint: '按開始，對著自己講六十秒。不必錄，先練順。',
+  lab3_start: '開始', lab3_stop: '停止', lab3_reset: '重來',
+  lab3_qs: [
+    '① 你是誰？個人特質、興趣、家庭與成長背景',
+    '② 你做過什麼？打工、實習、競賽、社團、志工',
+    '③ 為什麼選這門課？你的目標是什麼？',
+    '④ 你現在最需要什麼樣的協助？'
+  ],
+  lab3_done: '六十秒到了。講得完嗎？講不完就是要再挑一次重點。',
+  lab4_title: '三條原則練習',
+  lab4_hint: '看看下面這句話，勾出它有問題的地方。',
+  lab4_cases: [
+    { s: '「研究顯示，AI 將在未來取代 40% 的工作。」', flaws: [0,1], why: '沒有日期，也沒說是誰做的研究、樣本是什麼、「工作」怎麼定義。這種句子在網路上到處都是。' },
+    { s: '「根據 2024 年 3 月某顧問公司報告，某產業導入自動化後人力需求下降。」', flaws: [0,2], why: '有日期但已經偏舊，而且只有單一方向的結論，沒有看到反對或限制條件的討論。' },
+    { s: '「大家都說人形機器人五年內會進入家庭。」', flaws: [0,1,2], why: '「大家都說」既沒有日期、沒有來源，也沒有任何反面觀點。聲量不等於強度。' }
+  ],
+  lab4_flags: ['沒有日期／日期太舊', '找不到一手來源', '看不到反對意見'],
+  lab4_check: '看看結果', lab4_again: '換一句',
+  lab4_right: '答對了。',
+  lab4_wrong: '再想想。',
+
+  /* ---------- 資源 ---------- */
+  mres_nav: '7. 外部學習資源',
+  mres_title: '課前你可以先看的東西',
+  mres_desc: '以下都是公開的，不需要通行碼。課程總入口與十二份學習單在 W2 拿到通行碼之後才會開放。',
+  mres_group1: '先看終點',
+  mres_group2: '第一份作業會用到',
+  mres_group3: '選課前可以先想的',
+
+  /* ---------- 進度（不含個資） ---------- */
+  ana_nav: '8. 學習進度',
+  ana_title: '你在這一頁走到哪裡',
+  ana_desc: '這一頁不收任何個人資料——沒有姓名欄、沒有學號欄、沒有匯出。下面的紀錄只存在你這台裝置的瀏覽器裡，不會傳到任何伺服器，換一台電腦或清快取就會歸零。',
+  ana_privacy: '這是一個公開網頁。正因為公開，它刻意不收任何身分資料。',
+  ana_total_time: '總停留時間', ana_total_clicks: '總互動次數',
+  ana_overall_acc: '測驗答對率', ana_card_usage: '學習卡使用率',
+  ana_sec: '秒', ana_times: '次',
+  ana_progress_title: '各單元進度',
+  ana_visited: '已瀏覽', ana_not_visited: '未瀏覽', ana_quiz_done: '已測驗',
+  ana_module: '單元', ana_time: '停留', ana_clicks: '點擊', ana_acc: '答對率',
+  ana_no_data: '尚未測驗',
+  ana_wp_title: '哪裡可以再看一次',
+  ana_wp_goto: '→ 回去看這一節',
+  ana_wp_allpass: '所有做過的測驗答對率都在 75% 以上。你已經清楚這門課要什麼了。',
+  ana_saved: '紀錄自動存在你這台裝置的瀏覽器裡',
+  ana_clear: '🗑 清除紀錄',
+  ana_clear_confirm: '確定要清除這一頁的瀏覽紀錄嗎？此操作無法復原。',
+  ana_wp_tts_intro: '以下是建議再看一次的單元。',
+  ana_wp_tts_module: '單元：{name}，答對率 {acc}%。',
+  ana_wp_tts_allpass: '所有做過的測驗答對率都在百分之七十五以上。',
+
+  /* ---------- Footer ---------- */
+  date: 'Version 2026.08.25',
+  copyright: 'For Educational Use Only',
+  architect_label: 'Architect:',
+  architect_name: 'Prof. Shihmin Lo',
+  architect_url: 'https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo'
+},
+en: {
+  brand: 'PMCS',
+  title: 'W1 Orientation',
+  subtitle: 'See the World, Understand Industry, Shape Yourself',
+  nav_modules: 'Contents', nav_prev: 'Previous', nav_next: 'Next', nav_home: 'Home',
+  key_terms: 'Key Terms', flip_prompt: 'Click to flip',
+  flip_status: 'Read {read} / Shown {shown} / Total {total}',
+  flip_next: 'Next', flip_retry: 'Restart',
+  audio_read: 'Read aloud',
+  quiz_title: 'Module Check',
+  quiz_status: 'Correct {correct} / Answered {answered} / Total {total}',
+  quiz_next: 'Next', quiz_retry: 'Retry', submit: 'Submit',
+  correct: 'Correct', incorrect: 'Incorrect', explanation: 'Explanation',
+  overview_label: 'Overview',
+  highlights_label: 'Highlights',
+  deep_dive_label: 'Deep Dive',
+  wrapup_label: 'Wrap-up',
+
+  /* ---------- M0 ---------- */
+  m0_nav: '0. What this course does',
+  m0_title: 'What this course does, and what you have to decide today',
+  m0_intro: 'This is a one-credit general-education elective, fifty minutes on Wednesday afternoons, capped at thirty-six students, taught entirely in English. By the end of eighteen weeks your team will own a URL — a morning brief that updates itself every day and that anyone can open, analysing what the industry you want to enter is actually hiring for. It is not a report. It is something that genuinely runs: the URL opens, the log is readable, and it works again when you point it at a different industry. Every week of this course pushes towards that. But before you decide to stay, one thing has to be said plainly: this course costs you more than the fifty minutes in the room. It costs at least two hours a week outside it, and it expects you to have a paid AI plan. This page lays out every condition, everything due on the first day, and what happens if you do not hand it in. Read it, then decide. That is better for both of us.',
+  m0_why: 'Why lead with the conditions?',
+  m0_why_desc: 'Because the course is capped at thirty-six, and general-education places are allocated by preference and ballot. If you discover in week five that you cannot keep up, the place you drop can no longer be filled — and it could have gone to someone who really wanted it. So the bar goes at the front, not buried on the last page.',
+  m0_stats: [
+    { val: '18', label: 'weeks' },
+    { val: '1', label: 'credit' },
+    { val: '36', label: 'places' },
+    { val: '2 hr+', label: 'outside class' }
+  ],
+  m0_modules: [
+    { num: '01', title: 'Three shifts', desc: 'Not one new industry — every industry rebuilt' },
+    { num: '02', title: 'Three questions, by hand', desc: 'Why the first assignment bans AI' },
+    { num: '03', title: 'One-minute intro', desc: 'The 4Q, the promise, and 23:59 that day' },
+    { num: '04', title: 'Three checks', desc: 'This page will not tell you the state of play — it tells you how to find it' },
+    { num: '05', title: 'How the course runs', desc: 'The bar, the rhythm, adding the class, and what W2 unlocks' }
+  ],
+  m0_start: 'Start reading →',
+  m0_dday_label: 'First assignment closes',
+  m0_endpoint: 'Look at the endpoint first',
+  m0_endpoint_desc: 'This is the instructor’s own morning-brief agent, refreshed automatically every morning. By the end of term every team will have one of these, pointed at an industry you choose. Open it now.',
+
+  /* ---------- M1 ---------- */
+  m1_nav: '1. Three shifts',
+  m1_title: 'Three shifts: this is not one new industry',
+  m1_overview: 'The usual way to talk about AI and work is to say a new industry has appeared. That framing will make you decide badly. What is actually happening is that every existing industry has to rebuild itself. The industry you want to enter will not vanish — it will change shape, and what you have to judge is whether the preparation you were making still counts. The three tensions below ask you to make that judgement. They have no model answer, and this page will not give you one.',
+  m1_highlights: ['AI agents', 'Physical AI', 'Roles reshaped', 'smart everything', 'Paradigm shift'],
+  m1_p1: 'Start with the umbrella claim. "Smart everything" sounds like marketing, but it describes something concrete: manufacturing, retail, healthcare, logistics, finance and agriculture are each replacing their own processes with versions in which AI takes part in the decisions. Nobody is opening an "AI industry" next door — existing industries are being rebuilt from the inside. So the question is not "should I switch into AI", it is "which part of my industry is being rebuilt, and what kind of person does that part need".',
+  m1_p2: 'Tension one: who is doing the buying? For a century the base assumption of business models has been that people show up — to the shop, to the ad, to the app, to compare prices. Marketing, brand and channel all draw their value from that assumption. When comparing, ordering, renewing and returning are all handled by an AI agent, and nobody browses in person, does the brand premium survive? Can a channel still charge for shelf space? Who is the advertising for — a person, or an agent? You are a consumer yourself. Start by counting how many of your own decisions you no longer actually make.',
+  m1_p3: 'Tension two: which kind of work changes first? The comforting line of the past few years was that AI takes the desk jobs and hands-on work stays safe. Autonomous vehicles and humanoid robots have retired that comfort — once AI leaves the screen and acquires a body, warehousing, delivery, inspection, cleaning and parts of care work all come into range. That does not mean everything gets replaced. The real question is: in an environment where machines can both move and reason, which capabilities become more expensive? Your answer decides what you should be practising for the next four years.',
+  m1_p4: 'Tension three: will the job I want still look like that? A product manager used to write the specification, set priorities and hand it to an engineering team. There is now a role called the FDE — forward deployed engineer — who takes the product straight to the customer’s site, understands the problem there, changes it there and delivers it there, without waiting for the next development cycle. That role is expanding into territory PMs and project managers used to own. If your ambition is "become a product manager", ask yourself which version of the job you are preparing for.',
+  m1_p5: 'These three sit in week one not to make you an expert. They are here because the first assignment asks you to take a position, not to summarise one. You are allowed to be completely wrong, but you must commit — because in week sixteen you will read today’s answer again, and whether you can see any progress depends entirely on whether you left behind something specific enough to be proved wrong.',
+  m1_svg_cap: 'How the three tensions relate: one shared premise, three different points of attack',
+  m1_terms: [
+    { front: 'AI Agent', back: 'An AI that does not merely answer but carries out multi-step tasks on your behalf: research, compare, order, track, report. It removes "a person operates this personally" from the business model.' },
+    { front: 'Physical AI', back: 'AI with a body — humanoid robots, autonomous vehicles, automated warehouse equipment. The difference is that it changes the state of the physical world, not just produces text or images.' },
+    { front: 'FDE · Forward Deployed Engineer', back: 'Takes the product straight to the customer’s site: understands, modifies and delivers there, without waiting for the next development cycle. Expanding into PM and project-manager territory.' },
+    { front: 'Paradigm shift', back: 'Not the old way getting faster or better, but the shared sense of what counts as normal being replaced. The test: no amount of efficiency in the old method catches up.' },
+    { front: 'K / S / A', back: 'Knowledge, Skills, Attitude. The frame this course uses to take job requirements apart — which is exactly what the end-of-term morning-brief agent does.' },
+    { front: 'smart everything', back: 'Smart manufacturing, smart retail, smart healthcare, smart cities. What they share is not a new component but existing processes replaced by versions in which AI takes part in the decisions.' }
+  ],
+  m1_wrapup: 'This section does not ask you to be right. It asks you to pick at least two of the three tensions and write something that could be proved wrong — not "AI will change a lot of things", which nobody would dispute, but something specific enough that you would defend it. A position leaves room to improve; without one, in sixteen weeks you will find you have nothing to compare against.',
+  m1_q: [
+    { q: 'What is "not one new industry, but every industry rebuilt" mainly warning you about?', opts: ['You should switch into an AI job quickly', 'The industry you want will not vanish but will change shape — work out which part is being rebuilt', 'AI jobs pay better', 'Traditional industries are about to disappear'], ans: _A1, exp: 'The point is rebuilding from inside existing industries, so the question is "which part of my field", not "should I switch fields".' },
+    { q: 'Which long-standing assumption does tension one actually unsettle?', opts: ['Consumers chase the lowest price', 'People show up in person to browse, look and compare', 'Brands need to advertise', 'Channels need physical stores'], ans: _A1, exp: 'Marketing, brand and channel all draw their value from "people show up". Agents doing the buying loosens that premise.' },
+    { q: 'What does this section actually claim about physical AI?', opts: ['All hands-on work will be replaced', 'It retires the "hands-on work is safer" line, but the real question is which capabilities become more expensive', 'Humanoid robots will have no near-term effect', 'Only manufacturing is affected'], ans: _A1, exp: 'The text explicitly rejects "everything gets replaced" and redirects to which capabilities gain value.' },
+    { q: 'What most distinguishes an FDE from a traditional PM?', opts: ['Higher pay', 'No need to understand the product', 'Takes the product to the customer site and modifies and delivers there, without waiting for the next cycle', 'Only exists at startups'], ans: _A2, exp: 'The difference is the mode and tempo of delivery: understand on site, change on site, deliver on site.' },
+    { q: 'Why does the first assignment ask you to take a position rather than summarise?', opts: ['Positions are easier to grade', 'Week sixteen compares against what you wrote today — with no position there is nothing to compare', 'The instructor wants your politics', 'Summaries are easy to catch as plagiarism'], ans: _A1, exp: 'It is a before/after design: leave something specific and falsifiable today so progress is visible later.' }
+  ],
+
+  /* ---------- M2 ---------- */
+  m2_nav: '2. Three questions, by hand',
+  m2_title: 'Part A: three questions, handwritten, no AI',
+  m2_overview: 'The first written assignment is three questions, handwritten. iPad or paper, either is fine; photograph your work clearly and upload it to Moodle. The three keep this worksheet’s original bones — See the World, Understand Industry, Shape Yourself — but the wording has changed, because the material they respond to has changed.',
+  m2_highlights: ['Handwritten', 'No AI', 'Three questions', 'A "before" snapshot'],
+  m2_p1: 'Question one · See the World. Pick two of the three tensions from the previous section and write your position. Not a summary of what those paragraphs said — what you think will happen. It can be short, but it has to be specific enough that somebody could disagree with you.',
+  m2_p2: 'Question two · Understand Industry. Pick one industry you currently want to enter — food, semiconductors, fashion, finance, games, healthcare, anything. Explain which part of that industry your two chosen tensions would change. If you cannot see what they would change, that is also a finding: write it down honestly.',
+  m2_p3: 'Question three · Shape Yourself. Given what you just wrote, name the one concrete thing you will start doing this term. One only. "Read more" and "learn more skills" do not count — those are the shape of an idea you have not finished having. It has to be specific enough that you could start next week.',
+  m2_p4: 'Why handwritten, and why no AI? Two reasons, both about you. First, this is a "before" snapshot. In week sixteen you will read this page again, and the comparison only means something if today’s page is yours — if AI wrote it, you would be measuring AI’s progress, not your own. Second, almost every assignment in the following seventeen weeks uses AI, and uses it deeply. Precisely because of that, the first one has to show you what is actually in your head with no assistance at all. This is a baseline, not a punishment.',
+  m2_p5: 'Handwriting does one more practical thing: it slows you down. On a keyboard you drift into sentences that read smoothly and say nothing. With a pen you become concrete automatically, because you cannot be bothered to write filler. This is not mysticism — try it once and you will see.',
+  m2_terms: [
+    { front: 'Why by hand?', back: 'It slows you down, which stops the smooth-but-empty sentences; and it produces a "before" snapshot that AI could not have ghost-written.' },
+    { front: 'Why no AI?', back: 'Week sixteen compares against today. If AI wrote today, you would be measuring AI’s progress instead of your own.' },
+    { front: 'One concrete thing', back: 'Question three allows exactly one, specific enough to start next week. "Read more" is an idea you have not finished having.' },
+    { front: 'Disagreeable', back: 'The test of a good position: somebody could disagree. A claim nobody would dispute — "AI will change a lot" — is the same as saying nothing.' }
+  ],
+  m2_wrapup: 'None of the three needs to be long, but all three need to be yours. Short and specific beats long and safe. This assignment is not graded on whether you are right — it is graded on whether you actually thought.',
+  m2_q: [
+    { q: 'How is Part A handed in?', opts: ['A Google Form', 'Handwritten (iPad or paper), photographed and uploaded to Moodle', 'Typed as a Word file', 'Answered aloud in class'], ans: _A1, exp: 'Handwritten, photographed clearly, uploaded to Moodle.' },
+    { q: 'How many things does question three ask you to name?', opts: ['Three', 'Five', 'One, specific enough to start next week', 'As many as possible'], ans: _A2, exp: 'Exactly one, and concrete enough to begin next week.' },
+    { q: 'What is this section’s test of a good position?', opts: ['The more sources the better', 'Somebody could disagree with you', 'It matches the instructor’s view', 'The longer the better'], ans: _A1, exp: 'A claim nobody would dispute says nothing. Be specific enough to be argued with.' },
+    { q: 'Why does the first assignment ban AI?', opts: ['The course is against using AI', 'It is a "before" snapshot, so week sixteen measures your own progress', 'AI content is inaccurate', 'To stop cheating'], ans: _A1, exp: 'Nearly every later assignment uses AI heavily. This one does not, in order to leave a baseline.' }
+  ],
+
+  /* ---------- M3 ---------- */
+  m3_nav: '3. One-minute intro',
+  m3_title: 'One-minute self-introduction: the authentic version',
+  m3_overview: 'There is a second thing due on the day of W1: a one-minute self-introduction video in English, spoken by you, with no AI-written script. It closes at 23:59 that same day, uploaded to the designated Moodle assignment. It carries the same weight as the three handwritten questions — it is the "before" snapshot of your spoken English.',
+  m3_highlights: ['One minute', 'English', 'No AI script', '23:59 that day'],
+  m3_promise: 'This one is not graded, is not shown to the class, and is seen only by the instructor.',
+  m3_promise_d: 'You do not have to be fluent. You do not have to memorise a script, and you do not have to re-record ten times. Stumbling, pausing and losing a word are all fine — that is what a "before" is supposed to look like. After W2 you will work with AI on a script and record it again; put the two side by side and the gap is the first concrete evidence this course gives you. So the more honest the first one, the more that evidence is worth.',
+  m3_p1: 'What do you say? Use the 4Q as your frame. You do not need all four — fit what a minute allows. (1) Who you are: personality, interests, family and upbringing. (2) What you have done outside class: jobs, internships, competitions, clubs, volunteering. (3) Why you chose this course and what your goal is. (4) What kind of help you most need right now.',
+  m3_p2: 'Questions three and four are the ones most useful to the instructor. Thirty-odd people from different colleges and different years will be in that room; I need to know who you are, what you want and where you are stuck before I can give you the right thing over the following seventeen weeks. Please take those two seriously.',
+  m3_p3: 'How do you record it? Your phone is enough. No equipment, no editing. Light enough to see you and sound clear enough to hear you is the whole requirement. The course’s self-introduction practice page has a built-in video and audio recorder, the 4Q prompts, and a CEFR self-assessment — practise there once before you record for real. The link is on the resources page.',
+  m3_p4: 'What if it is not in by 23:59? I will advise you to drop the course promptly, and the TA will notify your department office. That sounds hard, but the reason is not punishment. General-education places are allocated by preference and ballot, this course is capped at thirty-six, and there is a queue behind your place. If you have not handed in the most basic first assignment, that seat is better given to someone who wants it — and the earlier it is released, the better the chance the next person can catch up.',
+  m3_p5: 'If you came in from the waiting list and were not in the room for W1, you still owe both pieces — the three handwritten questions and the authentic video — before the W2 class. If you want the instructor to sign you in personally, have both ready as well; whether to sign is the instructor’s judgement.',
+  m3_terms: [
+    { front: 'The 4Q', back: 'Who you are / what you have done / why this course and your goal / the help you most need. Four prompts; you do not have to cover all four.' },
+    { front: 'Why "authentic"?', back: 'No script, no AI — the point is to capture your spoken English as it is now. The AI-assisted version after W2 is the comparison, and the gap is the evidence.' },
+    { front: 'Not graded, not public', back: 'The first version is seen only by the instructor, is not shown to the class, and carries no marks. Stumbling is entirely fine.' },
+    { front: '23:59 that day', back: 'Before midnight on the day of the W1 class, to the designated Moodle assignment. Miss it and you are advised to drop promptly, out of fairness to the waiting list.' },
+    { front: 'CEFR', back: 'The Common European Framework of Reference, A1 to C2. This course expects B1 and above; the practice page has a reference and a self-check.' }
+  ],
+  m3_wrapup: 'What matters here is that it exists, not that it is good. It is a baseline, not an exam. The version that gets assessed comes in week sixteen — and by then you will be glad you left an honest one today.',
+  m3_q: [
+    { q: 'How long is the first (authentic) video, and when is it due?', opts: ['Three minutes, before the W2 class', 'One minute, 23:59 on the day of W1', 'Five minutes, end of term', 'Any length, any time'], ans: _A1, exp: 'One minute, uploaded to Moodle by 23:59 on the day of the W1 class.' },
+    { q: 'Which is true of the first video?', opts: ['It is played to the whole class', 'Not graded, not shown to the class, seen only by the instructor', 'It is worth 10% of the final grade', 'It needs an AI-written script'], ans: _A1, exp: 'Not graded, not public, instructor only — which is why stumbling does not matter.' },
+    { q: 'What does this page say happens if you miss the deadline?', opts: ['You lose participation marks', 'You are advised to drop promptly and the TA notifies your department, out of fairness to the waiting list', 'Nothing happens', 'You make it up orally'], ans: _A1, exp: 'General-education places are balloted and capped at thirty-six; releasing the seat early lets the next person catch up.' },
+    { q: 'You came off the waiting list and missed W1. What do you owe?', opts: ['Nothing', 'Both the handwritten questions and the authentic video, before the W2 class', 'Everything at the end of term', 'Only the video'], ans: _A1, exp: 'Both pieces, before the W2 class.' },
+    { q: 'Which two of the 4Q are most useful to the instructor?', opts: ['Personality and outside-class experience', 'Why you chose the course and goal, and the help you most need', 'Family background and interests', 'Part-time work and clubs'], ans: _A1, exp: 'The instructor needs to know what you want and where you are stuck to give you the right thing later.' }
+  ],
+
+  /* ---------- M4 ---------- */
+  m4_nav: '4. Three checks',
+  m4_title: 'This page will not tell you the state of play',
+  m4_overview: 'You may have noticed that the section on the three shifts named no company, no robot, no process node and no number. That is deliberate. This page does not tell you how things stand — it tells you how to find out, because by the year you graduate every specific figure written here will have expired.',
+  m4_highlights: ['Check the date', 'Find the primary source', 'Find the dissent'],
+  m4_p1: 'Check one · the date. For any claim about AI, find out when it was written. This field turns over roughly every six months; a two-year-old analysis may have lost its premises entirely. Treat undated content as untrustworthy by default. The rule looks too simple to matter, and it will filter out most of the rubbish you meet. Worth adding: AI has this problem too — its training data has a cut-off, and it will not spontaneously tell you which day its knowledge stops.',
+  m4_p2: 'Check two · the primary source. Most claims reach you second, third or fifth hand. Every retelling drops a qualifier, and at the end you get a sentence like "research shows AI will replace 40% of jobs" with no way of knowing where it came from. Trace it back: who did it, what was the sample, how were the terms defined? If you cannot reach a primary source, treat the claim as not yet established.',
+  m4_p3: 'Check three · the dissent. If everything you find points the same way, that is usually not because the question is settled — it is because your way of searching only surfaces one kind of answer. Go looking for what people who disagree actually say. Not for balance, but because the dissent will tell you directly where the argument is weakest. What you are judging is strength, not volume.',
+  m4_p4: 'Why teach this in week one? Because this course uses AI heavily from here on, and what AI is best at producing is content that sounds reasonable, carries no date, cites nothing traceable, and contains no opposing view. These three checks are the filter you will use every week. By week ten, when we get to context engineering, you will recognise them as its first draft.',
+  m4_terms: [
+    { front: 'Check the date', back: 'The field turns over about every six months. Undated content is untrustworthy by default. AI has a training cut-off it will not volunteer.' },
+    { front: 'Find the primary source', back: 'Every retelling drops a qualifier. Trace it back: who did it, how big the sample, how the terms were defined. If you cannot, treat it as unestablished.' },
+    { front: 'Find the dissent', back: 'Everything pointing one way usually means your search is biased. Dissent points straight at the weakest part of an argument.' },
+    { front: 'Strength, not volume', back: 'A claim being repeated often and a claim standing up are two different things.' }
+  ],
+  m4_wrapup: 'These are not academic conventions; they are self-defence. Run every claim you find in this course, and every answer AI hands you, through all three first. Anything that does not survive should not go into your assignment yet.',
+  m4_q: [
+    { q: 'Why does this page deliberately avoid naming companies and figures?', opts: ['The instructor does not know them', 'Specifics expire; this page teaches how to find them', 'Copyright concerns', 'Students would not understand'], ans: _A1, exp: 'By the year you graduate every figure written now has expired. Method outlasts answers.' },
+    { q: 'Why does "check the date" matter especially for AI topics?', opts: ['News always carries dates', 'The field turns over about every six months, so a two-year-old analysis may have lost its premises', 'Dates are useful for sorting', 'The instructor checks them'], ans: _A1, exp: 'And AI itself has a training cut-off it will not tell you about unprompted.' },
+    { q: 'What problem does "find the primary source" address?', opts: ['Too much material to read', 'Every retelling drops a qualifier until the claim cannot be traced', 'Primary sources are cheaper', 'All second-hand sources are false'], ans: _A1, exp: 'Trace it back: who did it, what sample, what definitions.' },
+    { q: 'Everything you find points the same way. What should you do?', opts: ['Accept it — there is consensus', 'Go looking for dissent, since the pattern may come from how you searched', 'Change topic', 'Believe the most repeated version'], ans: _A1, exp: 'Dissent points straight at the weakest part. Judge strength, not volume.' }
+  ],
+
+  /* ---------- M5 ---------- */
+  m5_nav: '5. How the course runs',
+  m5_title: 'The bar, the rhythm, and what you get',
+  m5_overview: 'This section puts every condition in one place. Once you have read it you have enough information to decide whether to stay — which is precisely what this page is for.',
+  m5_highlights: ['Four conditions', 'Weekly rhythm', 'Adding the class', 'After W2'],
+  m5_gate: 'Four conditions — miss one and it gets hard',
+  m5_gates: [
+    { t: 'At least 2 hours a week outside class', d: 'Class is fifty minutes; the actual work happens outside it — 40 to 50 minutes of individual reading and worksheet, about 40 minutes of group discussion, about 20 minutes of consolidation. This course is worth one credit but asks for three credits’ worth of time, and that has to be said up front.' },
+    { t: 'A paid AI plan of your own', d: 'Claude, ChatGPT or Gemini — any one will do, and teammates can support each other. A free plan just about survives the early weeks, but it will stall around week ten when you start building the term project.' },
+    { t: 'Taught in English, CEFR B1 and above', d: 'Class, materials, assignments and presentations are all in English. B1 is the floor, not the target — the course exists partly to push your English up — but accept that the first few weeks will be heavy.' },
+    { t: 'The first assignment is handwritten, with no AI', d: 'If handwriting itself is something you strongly resist, there are several more requirements like it ahead. Better to know now.' }
+  ],
+  m5_rhythm: 'The weekly rhythm',
+  m5_rhythm_d: 'From last Wednesday’s class to 23:59 this Tuesday you have six days: read the required material yourself, fill in your own sections of the worksheet, meet your group to consolidate one version, upload it to Moodle by Tuesday night. On Wednesday morning the TA consolidates and the instructor reads it and decides where to aim. The fifty minutes that afternoon then does only three things — a demonstration, two group presentations, and diagnosis of whatever you are stuck on. Class is not for delivering content; it is for unblocking what you could not finish outside it.',
+  m5_add: 'Adding the class',
+  m5_add_1: 'If you came off the waiting list: hand in the three handwritten questions and the one-minute authentic video before the W2 class. The TA will follow up.',
+  m5_add_2: 'If you want the instructor to sign you in personally: have both pieces ready first. Whether to sign is the instructor’s judgement.',
+  m5_after: 'What W2 unlocks',
+  m5_after_d: 'In the second class you get the passphrase for the course hub. That is where the full eighteen-week material map lives, along with twelve interactive worksheets, the term-project specification, the assessment and submission rules, the AI-use and data-ethics statement, and the setup guide for the SDL learning partner — a course-specific instruction file that turns your AI into a study partner that asks you questions instead of handing you answers. This page is the entrance, not the building.',
+  m5_p1: 'On grading: the weight sits on the weekly worksheets, the group presentations and the acceptance of the term project, not on a final exam. The detail lives behind the passphrase, but the principle can be said now — this course assesses what you built and whether it runs again, not what you memorised.',
+  m5_p2: 'On teams: groups form in week two and are deliberately mixed across departments and year groups. This is a general-education course, so a fourth-year computer-science student and a first-year Chinese-literature student may well be in the same room — and the term project needs exactly that mixture, because it needs someone who asks the right question as much as someone who can make the thing work. Every group is guaranteed at least one member with interest or experience in the tooling. If you cannot code, you are not there to make up the numbers; if you can, you are not there to be the group’s hired hand.',
+  m5_terms: [
+    { front: 'One credit, three credits’ time', back: 'Fifty minutes in class, at least two hours outside. This is the expected commitment stated in the syllabus — do the arithmetic before you decide.' },
+    { front: 'Paid AI plan', back: 'Claude, ChatGPT or Gemini; teammates can support each other. Free plans stall around week ten when the term project build starts.' },
+    { front: 'SDL learning partner', back: 'A course-specific instruction file that turns your AI into a partner that questions you, and produces a knowledge base you can hand in. Installed after you get the passphrase in W2.' },
+    { front: 'Mixed teams', back: 'Deliberately mixed by department and year. The term project needs someone who asks the right question as much as someone who can build.' },
+    { front: 'Class as a clinic', back: 'The fifty minutes is a demonstration, two presentations and stuck-point diagnosis — not a lecture from scratch. The learning happens outside.' }
+  ],
+  m5_wrapup: 'You now have enough. What this course wants is clear and it is not light, but eighteen weeks later you will have something that genuinely runs and a record that proves you improved. If that sounds like what you want, see you in W1. If it does not, please release the place early to someone in the queue — that is the better outcome for both of us.',
+  m5_q: [
+    { q: 'How much time outside class does this course expect each week?', opts: ['30 minutes', 'At least 2 hours', 'More than 5 hours', 'No requirement'], ans: _A1, exp: 'A one-credit course asking for three credits’ worth of time: reading and worksheet, group discussion, consolidation.' },
+    { q: 'What are the fifty minutes on Wednesday afternoon mainly for?', opts: ['The instructor lecturing through the week’s content', 'A demonstration, two group presentations, and diagnosis of stuck points', 'Tests and quizzes', 'Silent study and homework'], ans: _A1, exp: 'Class is a clinic, not a lecture. The real work is in the six days outside it.' },
+    { q: 'When is the course hub passphrase issued?', opts: ['In the W1 class', 'In the W2 class', 'Mid-semester', 'By email'], ans: _A1, exp: 'In week two, to students who have confirmed enrolment. This page is the entrance, not the building.' },
+    { q: 'How are groups formed?', opts: ['Students choose freely', 'By department', 'Deliberately mixed across departments and years, with at least one tooling-capable member per group', 'At random'], ans: _A2, exp: 'The term project needs different backgrounds: someone to ask the right question, someone to build.' },
+    { q: 'When does a free AI plan typically stop being enough?', opts: ['From week one', 'Around week ten, when the term-project build starts', 'It is enough all term', 'Just before the final exam'], ans: _A1, exp: 'Free plans just about survive the early weeks and stall when the morning-brief agent build begins.' }
+  ],
+
+  /* ---------- Lab ---------- */
+  mlab_nav: '6. Interactive Lab',
+  mlab_title: 'Four small tools to help you decide today',
+  mlab_desc: 'All four run in your own browser. Nothing is transmitted anywhere, and nothing records your name or student number. Close the tab and it is gone.',
+  mlab_labs: [
+    { title: 'Can I actually do this?', desc: 'Tick the four conditions honestly and see whether the course suits you right now. There is no correct answer, only an honest one.' },
+    { title: 'Time left to the deadline', desc: 'A live countdown to 23:59 on the day of W1. A sense of time beats a reminder.' },
+    { title: 'One-minute timer + 4Q prompts', desc: 'Press start, sixty seconds counts down, the 4Q prompts sit alongside. Rehearse twice before you record for real.' },
+    { title: 'Three-checks practice', desc: 'Take a few claims of the kind you will actually meet and run them through date, primary source and dissent.' }
+  ],
+  lab1_title: 'Can I actually do this?',
+  lab1_hint: 'Tick honestly — only you see this result.',
+  lab1_items: [
+    'I can find at least 2 hours a week outside class (on top of the 50 minutes)',
+    'I am willing and able to have a paid AI plan (or share with teammates)',
+    'I accept that class, materials, assignments and presentations are all in English',
+    'I am willing to handwrite the first assignment, with no AI',
+    'I am willing to meet my group every week, not just work alone'
+  ],
+  lab1_r5: 'Five out of five. This course was designed for you. See you in W1.',
+  lab1_r34: 'Three or four. You can take it, but work out how you will solve the ones you did not tick — usually it is scheduling, not ability.',
+  lab1_r12: 'One or two. I would suggest not this term. That is not a judgement on you; it is that the conditions do not line up, and the place is better released to the queue.',
+  lab1_r0: 'None. This course is not for you right now, and that is useful information rather than bad news.',
+  lab1_count: '{n} of 5 ticked',
+  lab2_title: 'Time left on the first assignment',
+  lab2_sub: '23:59 on the day of W1 (Taipei time)',
+  lab2_d: 'days', lab2_h: 'hours', lab2_m: 'min', lab2_s: 'sec',
+  lab2_over: 'Closed. If you came off the waiting list, your deadline is before the W2 class.',
+  lab3_title: 'One-minute timer + 4Q prompts',
+  lab3_hint: 'Press start and talk to yourself for sixty seconds. No need to record — just get it flowing.',
+  lab3_start: 'Start', lab3_stop: 'Stop', lab3_reset: 'Reset',
+  lab3_qs: [
+    '(1) Who are you? Personality, interests, family and upbringing',
+    '(2) What have you done? Jobs, internships, competitions, clubs, volunteering',
+    '(3) Why this course? What is your goal?',
+    '(4) What kind of help do you most need right now?'
+  ],
+  lab3_done: 'Sixty seconds. Did you finish? If not, choose your points again.',
+  lab4_title: 'Three-checks practice',
+  lab4_hint: 'Read the claim below and tick what is wrong with it.',
+  lab4_cases: [
+    { s: '"Research shows AI will replace 40% of jobs in the future."', flaws: [0,1], why: 'No date, and no indication of who did the research, what the sample was, or how "jobs" was defined. Sentences like this are everywhere.' },
+    { s: '"According to a March 2024 consultancy report, headcount fell in one industry after automation."', flaws: [0,2], why: 'It has a date but the date is getting old, and it offers a single-direction conclusion with no dissent or stated limits.' },
+    { s: '"Everyone says humanoid robots will be in homes within five years."', flaws: [0,1,2], why: '"Everyone says" has no date, no source and no opposing view. Volume is not strength.' }
+  ],
+  lab4_flags: ['No date, or the date is too old', 'No primary source', 'No dissenting view'],
+  lab4_check: 'Check', lab4_again: 'Another claim',
+  lab4_right: 'Correct.',
+  lab4_wrong: 'Try again.',
+
+  /* ---------- Resources ---------- */
+  mres_nav: '7. Learning Resources',
+  mres_title: 'What you can look at before class',
+  mres_desc: 'Everything below is public and needs no passphrase. The course hub and the twelve worksheets open once you receive the passphrase in W2.',
+  mres_group1: 'Look at the endpoint',
+  mres_group2: 'You will need these for the first assignment',
+  mres_group3: 'Worth thinking about before you enrol',
+
+  /* ---------- Progress ---------- */
+  ana_nav: '8. Your progress',
+  ana_title: 'How far you got through this page',
+  ana_desc: 'This page collects no personal data — no name field, no student number, no export. What is below lives only in this browser on this device, never reaches a server, and resets if you switch computers or clear your cache.',
+  ana_privacy: 'This is a public web page. Precisely because it is public, it deliberately collects no identifying data.',
+  ana_total_time: 'Time on page', ana_total_clicks: 'Interactions',
+  ana_overall_acc: 'Check accuracy', ana_card_usage: 'Flashcard usage',
+  ana_sec: 's', ana_times: '',
+  ana_progress_title: 'Progress by section',
+  ana_visited: 'Visited', ana_not_visited: 'Not visited', ana_quiz_done: 'Checked',
+  ana_module: 'Section', ana_time: 'Time', ana_clicks: 'Clicks', ana_acc: 'Accuracy',
+  ana_no_data: 'Not attempted',
+  ana_wp_title: 'Worth another look',
+  ana_wp_goto: '→ Back to this section',
+  ana_wp_allpass: 'Every check you attempted is at or above 75%. You know what this course wants.',
+  ana_saved: 'Saved in this browser on this device only',
+  ana_clear: '🗑 Clear record',
+  ana_clear_confirm: 'Clear the browsing record for this page? This cannot be undone.',
+  ana_wp_tts_intro: 'Sections worth another look.',
+  ana_wp_tts_module: 'Section: {name}, accuracy {acc} percent.',
+  ana_wp_tts_allpass: 'Every check you attempted is at or above seventy-five percent.',
+
+  /* ---------- Footer ---------- */
+  date: 'Version 2026.08.25',
+  copyright: 'For Educational Use Only',
+  architect_label: 'Architect:',
+  architect_name: 'Prof. Shihmin Lo',
+  architect_url: 'https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo'
+}
+};
+
+/* 外部資源（雙語共用網址，說明文字取自 dict） */
+const RES = [
+  { g: 1, label: "LoLo's Daily Brief", url: 'https://lolopodcast.github.io/daily-brief/',
+    zh: '教師自己的晨報 Agent，每天早上自動更新。這就是你們期末要做出來的東西的樣子。',
+    en: "The instructor's own morning-brief agent, refreshed every morning. This is the shape of what your team builds by the end of term." },
+  { g: 2, label: 'EMI-AI Self-Introduction Practice', url: 'https://lolopodcast.github.io/EMI-AI-Self-Introduction/',
+    zh: '自我介紹練習頁：4Q 提詞、內建錄影與錄音工具、CEFR 語言能力對照與自評。正式錄之前先來這裡練一次。',
+    en: 'The self-introduction practice page: 4Q prompts, a built-in video and audio recorder, and a CEFR reference and self-check. Rehearse here before recording for real.' },
+  { g: 3, label: 'AI Ecosystem Comparison — Claude vs ChatGPT vs Gemini', url: 'https://lolopodcast.github.io/AI-Ecosystem-Comparison/',
+    zh: '三個平台的比較。這門課要求付費方案，但買哪一家由你決定——W2 之前想清楚。',
+    en: 'A comparison of the three platforms. The course requires a paid plan; which one is your call. Decide before W2.' },
+  { g: 3, label: 'AI Workshop Hub', url: 'https://lolopodcast.github.io/AI-Workshop-Hub/',
+    zh: '教師的互動教材總庫。這門課的多數教材出自這裡，可以先逛逛看合不合你的胃口。',
+    en: "The instructor's library of interactive teaching material. Most of this course draws on it — browse to see whether it suits you." }
+];
+
+/* ==================== 共用元件 ==================== */
+const H2 = ({ children, Icon, number }) => (
+  <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-black text-[#004030] dark:text-[#D8C3A5] mb-6 flex items-start gap-3">
+    {Icon && <span className="shrink-0 mt-1.5 ui-decoration"><Icon size={26} /></span>}
+    {number !== undefined && <span className="shrink-0">{number}.</span>}
+    <span>{children}</span>
+  </h2>
+);
+
+const LinkCard = ({ label, url, desc }) => (
+  <a href={url} target="_blank" rel="noopener noreferrer"
+    className="block bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700
+      hover:border-[#004030] dark:hover:border-[#D8C3A5] hover:shadow-md transition-all group">
+    <span className="font-bold font-serif text-sm text-[#004030] dark:text-[#D8C3A5] group-hover:underline inline-flex items-center gap-1.5">
+      {label}<IconExternal size={13} />
+    </span>
+    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-1.5">{desc}</p>
+  </a>
+);
+
+/* ---------- 翻轉學習卡：每次從剩餘卡片隨機抽 2 張 ---------- */
+const FlipCardDeck = ({ terms, t, moduleId, onCardRead }) => {
+  const [groupIdx, setGroupIdx] = useState(0);
+  const [flipped, setFlipped] = useState({});
+  const [readSet, setReadSet] = useState(() => new Set());
+  const [shownSet, setShownSet] = useState(() => new Set());
+  const [order] = useState(() => [...Array(terms.length).keys()].sort(() => Math.random() - 0.5));
+
+  const groupSize = 2;
+  const totalGroups = Math.ceil(terms.length / groupSize);
+  const start = groupIdx * groupSize;
+  const current = order.slice(start, start + groupSize);
+
+  useEffect(() => {
+    const next = new Set(shownSet);
+    current.forEach(i => next.add(i));
+    if (next.size !== shownSet.size) setShownSet(next);
+  }, [groupIdx]);
+
+  const handleFlip = (i) => {
+    setFlipped(f => ({ ...f, [i]: !f[i] }));
+    if (!readSet.has(i)) {
+      const next = new Set(readSet); next.add(i); setReadSet(next);
+      if (onCardRead) onCardRead(moduleId, next.size, shownSet.size, terms.length);
+    }
+  };
+
+  const status = t.flip_status
+    .replace('{read}', readSet.size).replace('{shown}', shownSet.size).replace('{total}', terms.length);
+
+  return (
+    <div className="mt-8">
+      <h3 className="text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t.key_terms}</h3>
+      <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">{status}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {current.map(i => {
+          const term = terms[i];
+          return (
+            <div key={i} className="perspective cursor-pointer h-44 sm:h-40" onClick={() => handleFlip(i)}>
+              <div className={`transform-style-3d relative w-full h-full transition-transform duration-500 ${flipped[i] ? 'rotate-y-180' : ''}`}>
+                <div className="backface-hidden absolute inset-0 bg-white dark:bg-slate-800 rounded-xl p-4 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <p className="font-serif font-bold text-center text-[#004030] dark:text-[#D8C3A5]">{term.front}</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 ui-decoration">{t.flip_prompt}</p>
+                </div>
+                <div className="backface-hidden rotate-y-180 absolute inset-0 bg-[#004030] rounded-xl p-4 flex items-center justify-center overflow-y-auto">
+                  <p className="text-[13px] text-center text-[#F1E7D8] leading-relaxed">{term.back}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex items-center gap-3 mt-4">
+        <button onClick={() => { setGroupIdx(0); setFlipped({}); }}
+          className="px-4 py-2 text-sm border border-slate-400 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+          {t.flip_retry}
+        </button>
+        <button onClick={() => groupIdx < totalGroups - 1 && setGroupIdx(groupIdx + 1)}
+          disabled={groupIdx >= totalGroups - 1}
+          className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">
+          {t.flip_next}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+/* ---------- 模組檢定：每次從剩餘題目隨機抽 2 題，選項獨立洗牌 ---------- */
+const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName }) => {
+  const [selected, setSelected] = useState({});
+  const [submitted, setSubmitted] = useState({});
+  const [groupIdx, setGroupIdx] = useState(0);
+  const groupSize = 2;
+
+  const [qOrder] = useState(() => [...Array(questions.length).keys()].sort(() => Math.random() - 0.5));
+  const [optMaps] = useState(() => qOrder.map(qi => [...Array(questions[qi].opts.length).keys()].sort(() => Math.random() - 0.5)));
+  const totalGroups = Math.ceil(qOrder.length / groupSize);
+
+  const countCorrect = () => {
+    let c = 0;
+    qOrder.forEach((qi, k) => {
+      if (selected[k] === undefined) return;
+      if (optMaps[k][selected[k]] === _d(questions[qi].ans)) c++;
+    });
+    return c;
+  };
+  const status = t.quiz_status
+    .replace('{correct}', countCorrect())
+    .replace('{answered}', Object.keys(selected).length)
+    .replace('{total}', qOrder.length);
+
+  const start = groupIdx * groupSize;
+  const current = qOrder.slice(start, start + groupSize);
+
+  const handleSubmit = () => {
+    if (!current.every((_, i) => selected[start + i] !== undefined)) return;
+    const nextSub = { ...submitted, [groupIdx]: true };
+    setSubmitted(nextSub);
+    if (Object.keys(nextSub).length === totalGroups) {
+      const wrong = []; let c = 0;
+      qOrder.forEach((qi, k) => {
+        if (selected[k] === undefined) return;
+        if (optMaps[k][selected[k]] === _d(questions[qi].ans)) c++;
+        else wrong.push(questions[qi].q);
+      });
+      onQuizSubmit(moduleId, c, qOrder.length, wrong, moduleName);
+    }
+  };
+
+  return (
+    <div className="mt-8 bg-slate-100 dark:bg-slate-900/50 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-700">
+      <h3 className="text-lg font-bold font-serif text-[#004030] dark:text-[#D8C3A5] mb-2">{t.quiz_title}</h3>
+      <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">{status}</p>
+      {current.map((qi, li) => {
+        const k = start + li;
+        const q = questions[qi];
+        const map = optMaps[k];
+        const done = !!submitted[groupIdx];
+        const isRight = done && selected[k] !== undefined && map[selected[k]] === _d(q.ans);
+        return (
+          <div key={qi} className="mb-6">
+            <p className="font-bold mb-3">{k + 1}. {q.q}</p>
+            <div className="space-y-2">
+              {map.map((orig, di) => {
+                const right = orig === _d(q.ans);
+                const sel = selected[k] === di;
+                return (
+                  <button key={di} onClick={() => !done && setSelected(s => ({ ...s, [k]: di }))}
+                    className={`w-full text-left px-4 py-3 rounded-lg border transition-all text-sm
+                      ${done
+                        ? right ? 'bg-green-100 dark:bg-green-900/40 border-green-600 dark:border-green-500'
+                          : sel ? 'bg-red-100 dark:bg-red-900/40 border-red-500' : 'border-slate-300 dark:border-slate-700'
+                        : sel ? 'border-[#004030] dark:border-[#D8C3A5] bg-[#004030]/10 dark:bg-[#D8C3A5]/10'
+                          : 'border-slate-300 dark:border-slate-700 hover:border-slate-500 dark:hover:border-slate-500'}`}>
+                    {q.opts[orig]}
+                  </button>
+                );
+              })}
+            </div>
+            {done && (
+              <p className={`mt-2 text-sm ${isRight ? 'text-green-700 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                {isRight ? `✓ ${t.correct}` : `✗ ${t.incorrect}`} — {t.explanation}：{q.exp}
+              </p>
+            )}
+          </div>
+        );
+      })}
+      <div className="flex flex-wrap items-center gap-3">
+        {!submitted[groupIdx]
+          ? <button onClick={handleSubmit}
+              disabled={!current.every((_, i) => selected[start + i] !== undefined)}
+              className="px-6 py-2 bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">
+              {t.submit}
+            </button>
+          : <>
+              {groupIdx < totalGroups - 1 && (
+                <button onClick={() => setGroupIdx(groupIdx + 1)}
+                  className="px-6 py-2 bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg">
+                  {t.quiz_next}
+                </button>
+              )}
+              <button onClick={() => { setGroupIdx(0); setSelected({}); setSubmitted({}); }}
+                className="px-6 py-2 border border-[#004030] dark:border-[#D8C3A5] text-[#004030] dark:text-[#D8C3A5] font-bold rounded-lg">
+                {t.quiz_retry}
+              </button>
+            </>}
+      </div>
+    </div>
+  );
+};
+
+/* ==================== 互動實驗室（頂層宣告，不收任何個資） ==================== */
+
+/* Lab 1 · 我做得到嗎？ */
+const LabSelfCheck = ({ t, bump }) => {
+  const [on, setOn] = useState({});
+  const n = Object.values(on).filter(Boolean).length;
+  const verdict = n === 5 ? t.lab1_r5 : n >= 3 ? t.lab1_r34 : n >= 1 ? t.lab1_r12 : t.lab1_r0;
+  const tone = n === 5 ? 'bg-green-50 dark:bg-green-900/30 border-green-600'
+    : n >= 3 ? 'bg-[#004030]/10 dark:bg-[#D8C3A5]/10 border-[#004030] dark:border-[#D8C3A5]'
+    : 'bg-amber-50 dark:bg-amber-900/30 border-amber-600';
+  return (
+    <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700">
+      <h4 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-1">{t.lab1_title}</h4>
+      <p className="text-[13px] text-slate-600 dark:text-slate-400 mb-4">{t.lab1_hint}</p>
+      <div className="space-y-2">
+        {t.lab1_items.map((it, i) => (
+          <button key={i} onClick={() => { setOn(o => ({ ...o, [i]: !o[i] })); bump(); }}
+            className={`w-full text-left flex items-start gap-3 px-4 py-3 rounded-lg border transition-colors text-[13px]
+              ${on[i] ? 'border-[#004030] dark:border-[#D8C3A5] bg-[#004030]/10 dark:bg-[#D8C3A5]/10'
+                      : 'border-slate-300 dark:border-slate-700 hover:border-slate-500'}`}>
+            <span className={`shrink-0 mt-0.5 w-5 h-5 rounded border flex items-center justify-center text-[11px] font-bold
+              ${on[i] ? 'bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] border-transparent'
+                      : 'border-slate-400 dark:border-slate-500'}`}>{on[i] ? '✓' : ''}</span>
+            <span className="text-slate-700 dark:text-slate-200">{it}</span>
+          </button>
+        ))}
+      </div>
+      <p className="mt-4 text-sm font-bold text-slate-700 dark:text-slate-200">{t.lab1_count.replace('{n}', n)}</p>
+      <div className={`mt-2 p-4 rounded-lg border-l-4 ${tone}`}>
+        <p className="text-[13px] leading-relaxed text-slate-800 dark:text-slate-100">{verdict}</p>
+      </div>
+    </div>
+  );
+};
+
+/* Lab 2 · 截止倒數 */
+const LabCountdown = ({ t }) => {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => { const id = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(id); }, []);
+  const target = new Date(DEADLINE).getTime();
+  const diff = target - now;
+  const over = diff <= 0;
+  const s = Math.max(0, Math.floor(diff / 1000));
+  const parts = [
+    { v: Math.floor(s / 86400), l: t.lab2_d },
+    { v: Math.floor(s / 3600) % 24, l: t.lab2_h },
+    { v: Math.floor(s / 60) % 60, l: t.lab2_m },
+    { v: s % 60, l: t.lab2_s }
+  ];
+  return (
+    <div className="bg-[#004030] rounded-xl p-5 border border-[#004030]">
+      <h4 className="font-serif font-bold text-lg text-[#D8C3A5] mb-1">{t.lab2_title}</h4>
+      <p className="text-[13px] text-white/70 mb-4">{t.lab2_sub}</p>
+      {over ? (
+        <p className="text-[14px] text-amber-200 leading-relaxed">{t.lab2_over}</p>
+      ) : (
+        <div className="grid grid-cols-4 gap-2">
+          {parts.map((p, i) => (
+            <div key={i} className="text-center bg-white/10 rounded-lg py-3">
+              <p className="font-serif font-black text-2xl sm:text-3xl text-white tabular-nums leading-none">{p.v}</p>
+              <p className="text-[10px] uppercase tracking-wider text-[#D8C3A5] mt-1.5">{p.l}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* Lab 3 · 一分鐘計時 + 4Q 提詞 */
+const LabTimer = ({ t, bump }) => {
+  const [left, setLeft] = useState(60);
+  const [run, setRun] = useState(false);
+  useEffect(() => {
+    if (!run) return;
+    const id = setInterval(() => setLeft(v => { if (v <= 1) { setRun(false); return 0; } return v - 1; }), 1000);
+    return () => clearInterval(id);
+  }, [run]);
+  const pct = (left / 60) * 100;
+  return (
+    <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700">
+      <h4 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-1">{t.lab3_title}</h4>
+      <p className="text-[13px] text-slate-600 dark:text-slate-400 mb-4">{t.lab3_hint}</p>
+      <div className="flex items-center gap-4">
+        <p className="font-serif font-black text-4xl tabular-nums text-[#004030] dark:text-[#D8C3A5] w-24">
+          0:{String(left).padStart(2, '0')}
+        </p>
+        <div className="flex-1 h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+          <div className="h-full rounded-full bg-[#004030] dark:bg-[#D8C3A5] transition-all duration-1000 ease-linear" style={{ width: pct + '%' }}></div>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-2 mt-4">
+        <button onClick={() => { setRun(r => !r); bump(); }}
+          className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg">
+          {run ? t.lab3_stop : t.lab3_start}
+        </button>
+        <button onClick={() => { setRun(false); setLeft(60); bump(); }}
+          className="px-4 py-2 text-sm border border-slate-400 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+          {t.lab3_reset}
+        </button>
+      </div>
+      <ul className="mt-4 space-y-1.5">
+        {t.lab3_qs.map((q, i) => (
+          <li key={i} className="text-[13px] leading-relaxed text-slate-700 dark:text-slate-300">{q}</li>
+        ))}
+      </ul>
+      {left === 0 && <p className="mt-3 text-[13px] font-bold text-[#004030] dark:text-[#D8C3A5]">{t.lab3_done}</p>}
+    </div>
+  );
+};
+
+/* Lab 4 · 三條原則練習 */
+const LabChecks = ({ t, bump }) => {
+  const [idx, setIdx] = useState(0);
+  const [picked, setPicked] = useState({});
+  const [shown, setShown] = useState(false);
+  const c = t.lab4_cases[idx];
+  const right = useMemo(() => {
+    const want = new Set(c.flaws);
+    const got = new Set(Object.keys(picked).filter(k => picked[k]).map(Number));
+    if (want.size !== got.size) return false;
+    for (const v of want) if (!got.has(v)) return false;
+    return true;
+  }, [picked, idx]);
+  const next = () => { setIdx(i => (i + 1) % t.lab4_cases.length); setPicked({}); setShown(false); bump(); };
+  return (
+    <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700">
+      <h4 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-1">{t.lab4_title}</h4>
+      <p className="text-[13px] text-slate-600 dark:text-slate-400 mb-4">{t.lab4_hint}</p>
+      <p className="p-4 bg-slate-100 dark:bg-slate-900/60 rounded-lg italic font-serif text-[14px] leading-relaxed text-slate-800 dark:text-slate-100">{c.s}</p>
+      <div className="mt-4 space-y-2">
+        {t.lab4_flags.map((f, i) => (
+          <button key={i} onClick={() => { if (!shown) { setPicked(p => ({ ...p, [i]: !p[i] })); bump(); } }}
+            className={`w-full text-left flex items-start gap-3 px-4 py-2.5 rounded-lg border text-[13px] transition-colors
+              ${shown && c.flaws.indexOf(i) !== -1 ? 'border-green-600 bg-green-50 dark:bg-green-900/30'
+                : picked[i] ? 'border-[#004030] dark:border-[#D8C3A5] bg-[#004030]/10 dark:bg-[#D8C3A5]/10'
+                : 'border-slate-300 dark:border-slate-700 hover:border-slate-500'}`}>
+            <span className={`shrink-0 mt-0.5 w-5 h-5 rounded border flex items-center justify-center text-[11px] font-bold
+              ${picked[i] ? 'bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] border-transparent' : 'border-slate-400 dark:border-slate-500'}`}>{picked[i] ? '✓' : ''}</span>
+            <span className="text-slate-700 dark:text-slate-200">{f}</span>
+          </button>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-2 mt-4">
+        <button onClick={() => { setShown(true); bump(); }}
+          className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg">
+          {t.lab4_check}
+        </button>
+        <button onClick={next}
+          className="px-4 py-2 text-sm border border-slate-400 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+          {t.lab4_again}
+        </button>
+      </div>
+      {shown && (
+        <div className={`mt-3 p-4 rounded-lg border-l-4 ${right ? 'border-green-600 bg-green-50 dark:bg-green-900/30' : 'border-amber-600 bg-amber-50 dark:bg-amber-900/30'}`}>
+          <p className="text-[13px] font-bold text-slate-800 dark:text-slate-100 mb-1">{right ? t.lab4_right : t.lab4_wrong}</p>
+          <p className="text-[13px] leading-relaxed text-slate-700 dark:text-slate-200">{c.why}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* 三個張力的關係圖（可列印、雙色主題） */
+const TensionMap = ({ lang }) => {
+  const zh = lang === 'zh';
+  const box = (x, y, w, h, title, sub) => (
+    <g>
+      <rect x={x} y={y} width={w} height={h} rx="10" className="fill-white dark:fill-slate-800 stroke-[#004030] dark:stroke-[#D8C3A5]" strokeWidth="1.6" />
+      <text x={x + w / 2} y={y + 24} textAnchor="middle" className="fill-[#004030] dark:fill-[#D8C3A5]" fontSize="13" fontWeight="700">{title}</text>
+      <text x={x + w / 2} y={y + 44} textAnchor="middle" className="fill-slate-600 dark:fill-slate-300" fontSize="11">{sub}</text>
+    </g>
+  );
+  return (
+    <div className="w-full overflow-x-auto" onContextMenu={e => { e.preventDefault(); window.showCopyrightToast && window.showCopyrightToast(); }}>
+      <svg viewBox="0 0 720 300" className="w-full min-w-[560px] h-auto" draggable="false" role="img">
+        <rect x="110" y="12" width="500" height="58" rx="12" className="fill-[#004030]" />
+        <text x="360" y="38" textAnchor="middle" fill="#D8C3A5" fontSize="14" fontWeight="700">
+          {zh ? '不是多了一個新產業' : 'Not one new industry'}
+        </text>
+        <text x="360" y="58" textAnchor="middle" fill="#ffffff" fontSize="12" opacity="0.85">
+          {zh ? '是每一個既有產業都要重做一次' : 'Every existing industry gets rebuilt'}
+        </text>
+        <line x1="360" y1="70" x2="360" y2="100" className="stroke-[#004030] dark:stroke-[#D8C3A5]" strokeWidth="1.6" />
+        <line x1="130" y1="100" x2="590" y2="100" className="stroke-[#004030] dark:stroke-[#D8C3A5]" strokeWidth="1.6" />
+        <line x1="130" y1="100" x2="130" y2="128" className="stroke-[#004030] dark:stroke-[#D8C3A5]" strokeWidth="1.6" />
+        <line x1="360" y1="100" x2="360" y2="128" className="stroke-[#004030] dark:stroke-[#D8C3A5]" strokeWidth="1.6" />
+        <line x1="590" y1="100" x2="590" y2="128" className="stroke-[#004030] dark:stroke-[#D8C3A5]" strokeWidth="1.6" />
+        {box(30, 128, 200, 70, zh ? '① 誰在買東西？' : '(1) Who is buying?', zh ? '代理人代購 → 品牌與通路' : 'Agents buy → brand & channel')}
+        {box(260, 128, 200, 70, zh ? '② 哪種工作先被改？' : '(2) Which work changes?', zh ? '實體 AI → 什麼能力變貴' : 'Physical AI → what gains value')}
+        {box(490, 128, 200, 70, zh ? '③ 職位還長那樣嗎？' : '(3) Same job shape?', zh ? 'PM／PjM → FDE' : 'PM / PjM → FDE')}
+        <text x="360" y="235" textAnchor="middle" className="fill-slate-700 dark:fill-slate-200" fontSize="12" fontWeight="700">
+          {zh ? '挑兩個，寫出你的立場' : 'Pick two. Write your position.'}
+        </text>
+        <text x="360" y="257" textAnchor="middle" className="fill-slate-600 dark:fill-slate-400" fontSize="11">
+          {zh ? '具體到別人有辦法反對你' : 'Specific enough that someone could disagree'}
+        </text>
+        <text x="360" y="284" textAnchor="middle" className="fill-slate-500 dark:fill-slate-500" fontSize="10">
+          PMCS 1151 · Prof. Shihmin Lo · NCNU
+        </text>
+      </svg>
+    </div>
+  );
+};
+
+/* ==================== 主程式 ==================== */
+function App() {
+  const LS_KEY = 'PMCS_W1_progress';
+  const loadLS = (k, fb) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } };
+
+  const [lang, setLang] = useState('en');
+  const [isDark, setIsDark] = useState(true);
+  const [module, setModule] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [ttsState, setTtsState] = useState('idle');
+  const [prog, setProg] = useState(() => loadLS(LS_KEY, {
+    time: Array(TOTAL).fill(0), clicks: Array(TOTAL).fill(0),
+    quizCorrect: Array(TOTAL).fill(0), quizTotal: Array(TOTAL).fill(0),
+    cardsRead: Array(TOTAL).fill(0), cardsTotal: Array(TOTAL).fill(0),
+    visited: Array(TOTAL).fill(false), wrong: {}
+  }));
+  const menuRef = useRef(null);
+  const t = dict[lang];
+
+  useEffect(() => { document.documentElement.classList.toggle('dark', isDark); }, [isDark]);
+  useEffect(() => { document.documentElement.lang = (lang === 'zh' ? 'zh-Hant-TW' : 'en'); }, [lang]);
+  useEffect(() => { try { localStorage.setItem(LS_KEY, JSON.stringify(prog)); } catch (e) {} }, [prog]);
+
+  /* 停留時間：每秒累加到當前單元 */
+  useEffect(() => {
+    setProg(p => { if (p.visited[module]) return p; const v = [...p.visited]; v[module] = true; return { ...p, visited: v }; });
+    const id = setInterval(() => {
+      if (document.visibilityState === 'hidden') return;
+      setProg(p => { const tm = [...p.time]; tm[module] += 1; return { ...p, time: tm }; });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [module]);
+
+  const bump = () => setProg(p => { const c = [...p.clicks]; c[module] += 1; return { ...p, clicks: c }; });
+
+  useEffect(() => {
+    const h = (e) => { if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+
+  const handleQuizSubmit = (mid, correct, total, wrongQs) => {
+    setProg(p => {
+      const qc = [...p.quizCorrect], qt = [...p.quizTotal];
+      qc[mid] = correct; qt[mid] = total;
+      const w = { ...p.wrong }; w[mid] = wrongQs || [];
+      return { ...p, quizCorrect: qc, quizTotal: qt, wrong: w };
+    });
+  };
+  const handleCardRead = (mid, read, shown, total) => {
+    setProg(p => {
+      const cr = [...p.cardsRead], ct = [...p.cardsTotal];
+      cr[mid] = read; ct[mid] = total;
+      return { ...p, cardsRead: cr, cardsTotal: ct };
+    });
+  };
+
+  const modules = useMemo(() => {
+    const a = [{ id: 0, nav: t.m0_nav }];
+    for (let i = 1; i <= NUM_LEARN; i++) a.push({ id: i, nav: t[`m${i}_nav`] });
+    a.push({ id: IDX_LAB, nav: t.mlab_nav });
+    a.push({ id: IDX_RES, nav: t.mres_nav });
+    a.push({ id: IDX_ANA, nav: t.ana_nav });
+    return a;
+  }, [lang]);
+
+  const go = (i) => { setModule(i); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+  /* ============ 語音導覽（強化版：抗 Chrome 三個已知毛病） ============ */
+  const ttsUtter = useRef(null);
+  const ttsKeep = useRef(null);
+  const ttsWatch = useRef(null);
+  const ttsClearTimers = () => {
+    if (ttsKeep.current) { clearInterval(ttsKeep.current); ttsKeep.current = null; }
+    if (ttsWatch.current) { clearInterval(ttsWatch.current); ttsWatch.current = null; }
+  };
+  /* 一定要先 resume 再 cancel：在 paused 狀態下 cancel，Chrome 的語音引擎會一直卡在暫停，
+     之後每一次 speak() 都只會靜靜排隊，整頁看起來像壞掉。 */
+  const ttsHardReset = () => {
+    try { speechSynthesis.resume(); } catch (e) {}
+    try { speechSynthesis.cancel(); } catch (e) {}
+    ttsClearTimers();
+    ttsUtter.current = null;
+  };
+  useEffect(() => () => ttsHardReset(), []);
+  useEffect(() => { if (ttsState !== 'idle') { ttsHardReset(); setTtsState('idle'); } }, [module, lang]);
+
+  const ttsTexts = () => {
+    const out = [];
+    const put = (x) => { if (x) out.push(String(x)); };
+    if (module === 0) {
+      [t.m0_title, t.m0_intro, t.m0_why, t.m0_why_desc].forEach(put);
+      (t.m0_stats || []).forEach(s => put(`${s.val} ${s.label}`));
+      put(t.m0_endpoint); put(t.m0_endpoint_desc);
+      (t.m0_modules || []).forEach(m => put(`${m.title}. ${m.desc}`));
+    } else if (module >= 1 && module <= NUM_LEARN) {
+      const k = `m${module}`;
+      put(t[`${k}_title`]); put(t[`${k}_overview`]);
+      (t[`${k}_highlights`] || []).forEach(put);
+      [1, 2, 3, 4, 5].forEach(n => put(t[`${k}_p${n}`]));
+      if (module === 3) { put(t.m3_promise); put(t.m3_promise_d); }
+      if (module === 5) {
+        put(t.m5_gate);
+        (t.m5_gates || []).forEach(g => put(`${g.t}. ${g.d}`));
+        put(t.m5_rhythm); put(t.m5_rhythm_d);
+        put(t.m5_add); put(t.m5_add_1); put(t.m5_add_2);
+        put(t.m5_after); put(t.m5_after_d);
+      }
+      (t[`${k}_terms`] || []).forEach(x => { put(x.front); put(x.back); });
+      put(t[`${k}_wrapup`]);
+    } else if (module === IDX_LAB) {
+      put(t.mlab_title); put(t.mlab_desc);
+      (t.mlab_labs || []).forEach(l => put(`${l.title}. ${l.desc}`));
+    } else if (module === IDX_RES) {
+      put(t.mres_title); put(t.mres_desc);
+      RES.forEach(r => put(`${r.label}. ${lang === 'zh' ? r.zh : r.en}`));
+    } else {
+      put(t.ana_title); put(t.ana_desc); put(t.ana_privacy);
+      const tc = prog.quizCorrect.reduce((a, b) => a + b, 0);
+      const ta = prog.quizTotal.reduce((a, b) => a + b, 0);
+      put(`${t.ana_overall_acc}: ${ta > 0 ? Math.round(tc / ta * 100) : 0}%`);
+      const weak = [];
+      for (let i = 1; i <= NUM_LEARN; i++) {
+        if (prog.quizTotal[i] > 0) {
+          const acc = Math.round(prog.quizCorrect[i] / prog.quizTotal[i] * 100);
+          if (acc < 75) weak.push({ name: t[`m${i}_title`], acc });
+        }
+      }
+      if (weak.length) {
+        put(t.ana_wp_tts_intro);
+        weak.forEach(w => put(t.ana_wp_tts_module.replace('{name}', w.name).replace('{acc}', w.acc)));
+      } else if (ta > 0) put(t.ana_wp_tts_allpass);
+    }
+    return out.filter(Boolean);
+  };
+
+  const handleTTS = (action) => {
+    if (!('speechSynthesis' in window)) return;
+    if (action === 'stop') { ttsHardReset(); setTtsState('idle'); return; }
+    if (action === 'pause') { try { speechSynthesis.pause(); } catch (e) {} setTtsState('paused'); return; }
+    if (ttsState === 'paused') { try { speechSynthesis.resume(); } catch (e) {} setTtsState('playing'); return; }
+
+    ttsHardReset();
+    const sep = lang === 'zh' ? '。' : '. ';
+    const full = ttsTexts().join(sep);
+    const limit = lang === 'zh' ? 140 : 190;
+    /* 先切句，再把「單一句就超過上限」的長句硬切開——只靠句號分段，
+       遇到一個特別長的句子會整段送進 speak()，Chrome 會念到一半自己停掉。 */
+    const hardSplit = (s) => {
+      const out = [];
+      let rest = s;
+      while (rest.length > limit) {
+        let cut = -1;
+        if (lang === 'zh') {
+          cut = Math.max(rest.lastIndexOf('，', limit), rest.lastIndexOf('、', limit),
+                         rest.lastIndexOf('；', limit), rest.lastIndexOf('：', limit));
+        } else {
+          cut = Math.max(rest.lastIndexOf(', ', limit), rest.lastIndexOf('; ', limit),
+                         rest.lastIndexOf(' — ', limit), rest.lastIndexOf(' ', limit));
+        }
+        if (cut < limit * 0.4) cut = limit;      /* 找不到好的切點就硬切 */
+        out.push(rest.slice(0, cut + 1).trim());
+        rest = rest.slice(cut + 1).trim();
+      }
+      if (rest) out.push(rest);
+      return out;
+    };
+    const chunks = [];
+    let buf = '';
+    full.split(lang === 'zh' ? /(?<=[。！？；])/ : /(?<=[.!?;])\s+/).forEach(seg => {
+      if ((buf + seg).length > limit) {
+        if (buf) { chunks.push(buf); buf = ''; }
+        if (seg.length > limit) { hardSplit(seg).forEach(x => chunks.push(x)); return; }
+      }
+      buf += seg;
+    });
+    if (buf.trim()) chunks.push(buf);
+    if (!chunks.length) return;
+
+    /* 語音挑選：與課程既有 SPA 完全一致，不做任何更動 */
+    const voices = speechSynthesis.getVoices();
+    let voice = null, code = 'en-GB';
+    if (lang === 'zh') {
+      voice = voices.find(v => v.lang === 'zh-TW' && v.name.includes('Yating')) || voices.find(v => v.lang === 'zh-TW') || voices.find(v => v.lang.startsWith('zh')) || null;
+      code = 'zh-TW';
+    } else {
+      voice = voices.find(v => v.lang === 'en-GB' && (v.name.includes('Male') || v.name.includes('Daniel'))) || voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en')) || null;
+      code = 'en-GB';
+    }
+
+    let i = 0, started = false;
+    const finish = () => { ttsHardReset(); setTtsState('idle'); };
+    const speakNext = () => {
+      if (i >= chunks.length) { finish(); return; }
+      const u = new SpeechSynthesisUtterance(chunks[i++]);
+      u.rate = 0.95; u.lang = code; if (voice) u.voice = voice;
+      u.onstart = () => { started = true; };
+      u.onend = () => { if (ttsUtter.current === u) speakNext(); };
+      u.onerror = () => finish();
+      ttsUtter.current = u;           /* 保住強引用：被 GC 掉的 utterance 永遠不會觸發 onend */
+      speechSynthesis.speak(u);
+    };
+    speakNext();
+    setTtsState('playing');
+
+    /* Chrome 約 15 秒後會自己靜下來：每 8 秒 pause/resume 戳一下 */
+    ttsKeep.current = setInterval(() => {
+      try {
+        if (!speechSynthesis.speaking || speechSynthesis.paused) return;
+        speechSynthesis.pause(); speechSynthesis.resume();
+      } catch (e) {}
+    }, 8000);
+
+    /* 看門狗：引擎三種狀態都不在了就收工，把按鈕還原成播放 */
+    let idle = 0;
+    ttsWatch.current = setInterval(() => {
+      try {
+        if (speechSynthesis.speaking || speechSynthesis.pending || speechSynthesis.paused) { idle = 0; return; }
+      } catch (e) { return; }
+      idle += 1;
+      if (idle >= (started ? 3 : 30)) finish();
+    }, 800);
+  };
+
+  /* ============ 版面 ============ */
+  const Stat = ({ v, l }) => (
+    <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center">
+      <p className="font-serif font-black text-2xl sm:text-3xl text-[#004030] dark:text-[#D8C3A5] leading-none">{v}</p>
+      <p className="text-[11px] uppercase tracking-wider text-slate-600 dark:text-slate-400 mt-2">{l}</p>
+    </div>
+  );
+
+  const renderM0 = () => (
+    <div className="space-y-8 animate-fade-in">
+      <div>
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-400 mb-2">
+          {lang === 'zh' ? '國立暨南國際大學 · 通識教育' : 'National Chi Nan University · General Education'}
+        </p>
+        <h1 className="font-serif font-black text-3xl sm:text-4xl md:text-5xl leading-tight text-[#004030] dark:text-[#D8C3A5]">{t.m0_title}</h1>
+        <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 italic font-serif">{t.subtitle}</p>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">{t.m0_stats.map((s, i) => <Stat key={i} v={s.val} l={s.label} />)}</div>
+
+      <p className="text-lg leading-relaxed text-slate-700 dark:text-slate-300">{t.m0_intro}</p>
+
+      <div className="bg-[#004030] rounded-2xl p-5 sm:p-6 border border-[#004030]">
+        <h3 className="font-serif font-bold text-lg text-[#D8C3A5] mb-2">{t.m0_endpoint}</h3>
+        <p className="text-[14px] leading-relaxed text-white/85 max-w-3xl">{t.m0_endpoint_desc}</p>
+        <a href="https://lolopodcast.github.io/daily-brief/" target="_blank" rel="noopener noreferrer" onClick={bump}
+          className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-[#D8C3A5] text-[#004030] font-bold rounded-lg text-sm hover:bg-white transition-colors">
+          LoLo&apos;s Daily Brief <IconExternal size={14} />
+        </a>
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 sm:p-6 border-l-4 border-l-[#004030] dark:border-l-[#D8C3A5] border border-slate-200 dark:border-slate-700">
+        <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-2">{t.m0_why}</h3>
+        <p className="text-[14px] leading-relaxed text-slate-700 dark:text-slate-300">{t.m0_why_desc}</p>
+      </div>
+
+      <LabCountdown t={t} />
+
+      <section>
+        <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-3">{t.nav_modules}</h3>
+        <div className="space-y-2">
+          {t.m0_modules.map((m, i) => (
+            <button key={i} onClick={() => { go(i + 1); bump(); }}
+              className="w-full text-left flex items-start gap-4 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700
+                bg-white dark:bg-slate-800 hover:border-[#004030] dark:hover:border-[#D8C3A5] transition-colors">
+              <span className="font-mono text-[12px] font-bold text-slate-600 dark:text-slate-400 shrink-0 mt-0.5">{m.num}</span>
+              <span className="flex-1 min-w-0">
+                <span className="block text-sm font-bold text-slate-800 dark:text-slate-100">{m.title}</span>
+                <span className="block text-[12px] text-slate-600 dark:text-slate-400 mt-0.5">{m.desc}</span>
+              </span>
+              <span className="shrink-0 text-slate-400 mt-0.5"><IconChevronRight size={16} /></span>
+            </button>
+          ))}
+        </div>
+        <button onClick={() => { go(1); bump(); }}
+          className="mt-4 px-6 py-3 bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg">
+          {t.m0_start}
+        </button>
+      </section>
+    </div>
+  );
+
+  const renderLearn = () => {
+    const k = `m${module}`;
+    const Icon = MOD_ICON[module];
+    return (
+      <div className="space-y-6 text-lg leading-relaxed text-slate-700 dark:text-slate-300 animate-fade-in">
+        <H2 Icon={Icon} number={module}>{t[`${k}_title`]}</H2>
+
+        <div className="bg-[#004030]/10 dark:bg-[#D8C3A5]/10 rounded-xl p-5 border-l-4 border-[#004030] dark:border-[#D8C3A5]">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t.overview_label}</h3>
+          <p className="text-[15px]">{t[`${k}_overview`]}</p>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-3">{t.highlights_label}</h3>
+          <div className="flex flex-wrap gap-2">
+            {t[`${k}_highlights`].map((h, i) => (
+              <span key={i} className="px-3 py-1 bg-[#004030]/15 dark:bg-[#D8C3A5]/15 text-[#004030] dark:text-[#D8C3A5] rounded-full text-sm font-medium">{h}</span>
+            ))}
+          </div>
+        </div>
+
+        {module === 3 && (
+          <div className="bg-amber-50 dark:bg-amber-950/40 rounded-xl p-5 border-2 border-amber-500 dark:border-amber-600">
+            <p className="flex items-start gap-2 font-serif font-bold text-lg text-amber-900 dark:text-amber-200 leading-snug">
+              <span className="shrink-0 mt-1"><IconCheck size={20} /></span>{t.m3_promise}
+            </p>
+            <p className="mt-2 text-[14px] leading-relaxed text-amber-900/90 dark:text-amber-100/90">{t.m3_promise_d}</p>
+          </div>
+        )}
+
+        <div className="space-y-4">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{t.deep_dive_label}</h3>
+          {[1, 2, 3, 4, 5].map(n => {
+            const txt = t[`${k}_p${n}`];
+            if (!txt) return null;
+            return n === 2
+              ? <p key={n} className="p-4 bg-slate-100 dark:bg-slate-800 rounded-lg italic font-serif text-[16px]">{txt}</p>
+              : <p key={n} className="text-[16px]">{txt}</p>;
+          })}
+        </div>
+
+        {module === 1 && (
+          <figure className="my-2">
+            <TensionMap lang={lang} />
+            <figcaption className="mt-2 text-center text-[12px] text-slate-600 dark:text-slate-400">{t.m1_svg_cap}</figcaption>
+          </figure>
+        )}
+
+        {module === 5 && (
+          <>
+            <section>
+              <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-3">{t.m5_gate}</h3>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {t.m5_gates.map((g, i) => (
+                  <div key={i} className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                    <p className="font-bold text-[14px] text-slate-800 dark:text-slate-100">{g.t}</p>
+                    <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">{g.d}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+            <section>
+              <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-2">{t.m5_rhythm}</h3>
+              <p className="text-[15px]">{t.m5_rhythm_d}</p>
+            </section>
+            <section>
+              <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-2">{t.m5_add}</h3>
+              <ul className="space-y-2">
+                {[t.m5_add_1, t.m5_add_2].map((x, i) => (
+                  <li key={i} className="flex gap-3 text-[15px]"><span className="text-[#004030] dark:text-[#D8C3A5] shrink-0">—</span><span>{x}</span></li>
+                ))}
+              </ul>
+            </section>
+            <section className="bg-[#004030] rounded-2xl p-5 sm:p-6">
+              <h3 className="font-serif font-bold text-lg text-[#D8C3A5] mb-2">{t.m5_after}</h3>
+              <p className="text-[14px] leading-relaxed text-white/85">{t.m5_after_d}</p>
+            </section>
+          </>
+        )}
+
+        <FlipCardDeck key={`cards-${module}-${lang}`} terms={t[`${k}_terms`]} t={t} moduleId={module} onCardRead={handleCardRead} />
+
+        <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-5">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t.wrapup_label}</h3>
+          <p className="italic text-[15px]">{t[`${k}_wrapup`]}</p>
+        </div>
+
+        <ModuleQuiz key={`quiz-${module}-${lang}`} questions={t[`${k}_q`]} t={t} moduleId={module}
+          onQuizSubmit={handleQuizSubmit} moduleName={t[`${k}_title`]} />
+      </div>
+    );
+  };
+
+  const renderLab = () => (
+    <div className="space-y-6 animate-fade-in">
+      <H2 Icon={MOD_ICON[IDX_LAB]} number={IDX_LAB}>{t.mlab_title}</H2>
+      <p className="text-[15px] leading-relaxed text-slate-700 dark:text-slate-300 max-w-3xl">{t.mlab_desc}</p>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <LabSelfCheck t={t} bump={bump} />
+        <LabCountdown t={t} />
+        <LabTimer t={t} bump={bump} />
+        <LabChecks t={t} bump={bump} />
+      </div>
+    </div>
+  );
+
+  const renderRes = () => (
+    <div className="space-y-6 animate-fade-in">
+      <H2 Icon={MOD_ICON[IDX_RES]} number={IDX_RES}>{t.mres_title}</H2>
+      <p className="text-[15px] leading-relaxed text-slate-700 dark:text-slate-300 max-w-3xl">{t.mres_desc}</p>
+      {[1, 2, 3].map(g => (
+        <section key={g}>
+          <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-3">{t[`mres_group${g}`]}</h3>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {RES.filter(r => r.g === g).map((r, i) => (
+              <LinkCard key={i} label={r.label} url={r.url} desc={lang === 'zh' ? r.zh : r.en} />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+
+  const renderAna = () => {
+    const sum = (a) => a.reduce((x, y) => x + y, 0);
+    const tc = sum(prog.quizCorrect), ta = sum(prog.quizTotal);
+    const cr = sum(prog.cardsRead), ct = sum(prog.cardsTotal);
+    const acc = ta > 0 ? Math.round(tc / ta * 100) : 0;
+    const cardPct = ct > 0 ? Math.round(cr / ct * 100) : 0;
+    const weak = [];
+    for (let i = 1; i <= NUM_LEARN; i++) {
+      if (prog.quizTotal[i] > 0) {
+        const a = Math.round(prog.quizCorrect[i] / prog.quizTotal[i] * 100);
+        if (a < 75) weak.push({ i, name: t[`m${i}_title`], acc: a });
+      }
+    }
+    weak.sort((a, b) => a.acc - b.acc);
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <H2 Icon={MOD_ICON[IDX_ANA]} number={IDX_ANA}>{t.ana_title}</H2>
+        <p className="text-[15px] leading-relaxed text-slate-700 dark:text-slate-300 max-w-3xl">{t.ana_desc}</p>
+        <div className="bg-amber-50 dark:bg-amber-950/40 rounded-xl p-4 border-l-4 border-amber-500 flex items-start gap-2">
+          <span className="shrink-0 mt-0.5 text-amber-700 dark:text-amber-400"><IconAlert size={17} /></span>
+          <p className="text-[13px] leading-relaxed text-amber-900 dark:text-amber-100">{t.ana_privacy}</p>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <Stat v={`${sum(prog.time)}${t.ana_sec}`} l={t.ana_total_time} />
+          <Stat v={`${sum(prog.clicks)}`} l={t.ana_total_clicks} />
+          <Stat v={`${acc}%`} l={t.ana_overall_acc} />
+          <Stat v={`${cardPct}%`} l={t.ana_card_usage} />
+        </div>
+
+        <section>
+          <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-3">{t.ana_progress_title}</h3>
+          <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+            <table className="w-full min-w-[520px] text-[13px] border-collapse">
+              <thead>
+                <tr className="text-left text-[11px] uppercase tracking-wider text-slate-600 dark:text-slate-400 border-b border-slate-300 dark:border-slate-700">
+                  <th className="py-2 pr-3 font-bold">{t.ana_module}</th>
+                  <th className="py-2 px-3 font-bold whitespace-nowrap">{t.ana_time}</th>
+                  <th className="py-2 px-3 font-bold whitespace-nowrap">{t.ana_clicks}</th>
+                  <th className="py-2 pl-3 font-bold whitespace-nowrap">{t.ana_acc}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {modules.filter(m => m.id !== IDX_ANA).map(m => {
+                  const qt = prog.quizTotal[m.id];
+                  return (
+                    <tr key={m.id} className="border-b border-slate-200 dark:border-slate-800">
+                      <td className="py-2.5 pr-3">
+                        <button onClick={() => go(m.id)} className="text-left hover:underline text-slate-800 dark:text-slate-100">
+                          {m.nav}
+                        </button>
+                        <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded ${prog.visited[m.id] ? 'bg-[#004030] text-[#D8C3A5]' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>
+                          {prog.visited[m.id] ? t.ana_visited : t.ana_not_visited}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 tabular-nums text-slate-700 dark:text-slate-300">{prog.time[m.id]}{t.ana_sec}</td>
+                      <td className="py-2.5 px-3 tabular-nums text-slate-700 dark:text-slate-300">{prog.clicks[m.id]}</td>
+                      <td className="py-2.5 pl-3 tabular-nums text-slate-700 dark:text-slate-300">
+                        {qt > 0 ? `${Math.round(prog.quizCorrect[m.id] / qt * 100)}%` : t.ana_no_data}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-3">{t.ana_wp_title}</h3>
+          {weak.length ? (
+            <div className="space-y-2">
+              {weak.map(w => (
+                <div key={w.i} className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                  <p className="font-bold text-[14px] text-slate-800 dark:text-slate-100">{w.name} — {w.acc}%</p>
+                  {(prog.wrong[w.i] || []).map((q, j) => (
+                    <p key={j} className="mt-1 text-[12px] text-slate-600 dark:text-slate-400">· {q}</p>
+                  ))}
+                  <button onClick={() => go(w.i)} className="mt-2 text-[13px] font-bold text-[#004030] dark:text-[#D8C3A5] hover:underline">
+                    {t.ana_wp_goto}
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[14px] text-slate-700 dark:text-slate-300">{t.ana_wp_allpass}</p>
+          )}
+        </section>
+
+        <div className="flex flex-wrap items-center gap-3 pt-2">
+          <p className="text-[12px] text-slate-600 dark:text-slate-400">💾 {t.ana_saved}</p>
+          <button onClick={() => {
+            if (!window.confirm(t.ana_clear_confirm)) return;
+            try { localStorage.removeItem(LS_KEY); } catch (e) {}
+            setProg({
+              time: Array(TOTAL).fill(0), clicks: Array(TOTAL).fill(0),
+              quizCorrect: Array(TOTAL).fill(0), quizTotal: Array(TOTAL).fill(0),
+              cardsRead: Array(TOTAL).fill(0), cardsTotal: Array(TOTAL).fill(0),
+              visited: Array(TOTAL).fill(false), wrong: {}
+            });
+          }} className="px-4 py-2 text-sm font-bold text-red-700 dark:text-red-400 border border-red-400 dark:border-red-700 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30">
+            {t.ana_clear}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const body = module === 0 ? renderM0()
+    : module <= NUM_LEARN ? renderLearn()
+    : module === IDX_LAB ? renderLab()
+    : module === IDX_RES ? renderRes()
+    : renderAna();
+
+  return (
+    <div className="min-h-screen flex flex-col pt-16 overflow-x-clip" onClick={bump}>
+      <header className="fixed top-0 left-0 right-0 h-16 bg-[#004030] dark:bg-slate-900 text-white z-50 shadow-lg border-b border-[#D8C3A5]/30">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1 min-w-0">
+            <div className="relative" ref={menuRef}>
+              <button onClick={() => setMenuOpen(o => !o)} aria-label={t.nav_modules} className="p-2 hover:bg-white/10 rounded-lg">
+                {menuOpen ? <IconX /> : <IconMenu />}
+              </button>
+              {menuOpen && (
+                <div className="absolute top-full left-0 mt-1 w-72 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-5rem)] overflow-y-auto
+                  bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 z-[100] py-1">
+                  {modules.map(m => {
+                    const Icon = MOD_ICON[m.id];
+                    return (
+                      <button key={m.id} onClick={() => go(m.id)}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left transition-colors
+                          ${module === m.id ? 'bg-[#004030]/10 dark:bg-[#D8C3A5]/10 text-[#004030] dark:text-[#D8C3A5] font-bold'
+                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
+                        <span className="shrink-0"><Icon size={16} /></span>
+                        <span className="truncate">{m.nav}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+            <button onClick={() => go(0)} aria-label={t.nav_home} className="p-2 hover:bg-white/10 rounded-lg"><IconHome size={18} /></button>
+            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-baseline gap-2 min-w-0 px-1">
+              <span className="font-serif font-black text-[#D8C3A5] text-lg tracking-widest shrink-0">{t.brand}</span>
+              <span className="hidden sm:inline font-serif font-bold text-sm md:text-base truncate">{t.title}</span>
+            </button>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
+            <button onClick={() => handleTTS(ttsState === 'playing' ? 'pause' : 'play')} aria-label={t.audio_read}
+              className="p-2 hover:bg-white/10 rounded-lg">{ttsState === 'playing' ? <IconPause size={17} /> : <IconPlay size={17} />}</button>
+            {ttsState !== 'idle' && (
+              <button onClick={() => handleTTS('stop')} aria-label="stop" className="p-2 hover:bg-white/10 rounded-lg"><IconSquare size={17} /></button>
+            )}
+            <button onClick={() => setLang(l => l === 'en' ? 'zh' : 'en')}
+              className="px-2.5 py-1.5 text-xs font-bold hover:bg-white/10 rounded-lg">{lang === 'en' ? '中文' : 'EN'}</button>
+            <button onClick={() => setIsDark(d => !d)} aria-label="theme" className="p-2 hover:bg-white/10 rounded-lg">
+              {isDark ? <IconSun size={17} /> : <IconMoon size={17} />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="flex-1 w-full max-w-7xl mx-auto flex gap-8 px-4 sm:px-6 py-8">
+        <aside className="hidden md:block w-56 lg:w-64 shrink-0">
+          <nav className="sticky top-24 space-y-1">
+            {modules.map(m => {
+              const Icon = MOD_ICON[m.id];
+              return (
+                <button key={m.id} onClick={() => go(m.id)}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] text-left transition-colors
+                    ${module === m.id ? 'bg-[#004030] text-[#D8C3A5] font-bold'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'}`}>
+                  <span className="shrink-0"><Icon size={15} /></span>
+                  <span className="truncate">{m.nav}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </aside>
+
+        <main className="flex-1 min-w-0">
+          {body}
+          <div className="mt-12 flex justify-between items-center pt-8 border-t border-slate-300 dark:border-slate-700">
+            <button onClick={() => go(Math.max(0, module - 1))} disabled={module === 0}
+              className="px-4 py-2 text-sm font-bold text-[#004030] dark:text-[#D8C3A5] hover:underline disabled:opacity-0">← {t.nav_prev}</button>
+            <button onClick={() => go(Math.min(TOTAL - 1, module + 1))} disabled={module === TOTAL - 1}
+              className="px-4 py-2 text-sm font-bold text-[#004030] dark:text-[#D8C3A5] hover:underline disabled:opacity-0">{t.nav_next} →</button>
+          </div>
+        </main>
+      </div>
+
+      <footer className="h-8 bg-[#004030] flex items-center justify-between px-4 shrink-0">
+        <span className="text-[#D8C3A5]/85 text-[10px] sm:text-xs truncate">{t.date} · {t.copyright}</span>
+        <span className="text-[#D8C3A5]/85 text-[10px] sm:text-xs flex items-center gap-3 shrink-0">
+          <span className="hidden xs:inline sm:inline">{t.architect_label}&nbsp;
+            <a href={t.architect_url} target="_blank" rel="noopener noreferrer" className="text-[#D8C3A5] hover:text-white underline">Prof. Shihmin Lo</a>
+          </span>
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-[#D8C3A5] hover:text-white font-bold">Top ↑</button>
+        </span>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
