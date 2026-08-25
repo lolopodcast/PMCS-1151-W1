@@ -197,6 +197,11 @@ zh: {
   brand: 'PMCS',
   title: 'W1 課程導論',
   subtitle: 'See the World, Understand Industry, Shape Yourself',
+  course_zh: 'AI 世代產品經理職涯策略與專案管理導論（全英授課）',
+  course_en: 'Introduction to Project Management and Career Strategy as a Product Manager in the AI Era',
+  course_code: 'PMCS (EMI) · 1151',
+  dept: '國立暨南國際大學 · 通識教育',
+  teacher: '國際企業學系　駱世民 教授',
   nav_modules: '單元目錄', nav_prev: '上一單元', nav_next: '下一單元', nav_home: '首頁',
   key_terms: '關鍵專有名詞', flip_prompt: '點擊翻轉',
   flip_status: '已讀 {read} / 已顯示 {shown} / 總計 {total}',
@@ -558,6 +563,11 @@ en: {
   brand: 'PMCS',
   title: 'W1 Orientation',
   subtitle: 'See the World, Understand Industry, Shape Yourself',
+  course_zh: 'AI 世代產品經理職涯策略與專案管理導論（全英授課）',
+  course_en: 'Introduction to Project Management and Career Strategy as a Product Manager in the AI Era',
+  course_code: 'PMCS (EMI) · 1151',
+  dept: 'National Chi Nan University · General Education',
+  teacher: 'Prof. Shihmin Lo, Department of International Business Studies',
   nav_modules: 'Contents', nav_prev: 'Previous', nav_next: 'Next', nav_home: 'Home',
   key_terms: 'Key Terms', flip_prompt: 'Click to flip',
   flip_status: 'Read {read} / Shown {shown} / Total {total}',
@@ -1503,18 +1513,27 @@ const SVG_OF = { 1: MacroMap, 2: IndustryChain, 3: PersonalMap, 4: PMMap, 5: Ten
 function App() {
   const LS_KEY = 'PMCS_W1_progress';
   const loadLS = (k, fb) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } };
+  /* 單元數改變過，舊瀏覽器裡存的陣列會比 TOTAL 短，讀到 undefined 後相加就變成 NaN。
+     載入時一律補齊長度並把非數值歸零，這樣改版不會讓學生看到 NaN。 */
+  const fixArr = (a, len, zero) => Array.from({ length: len }, (_, i) => {
+    const v = Array.isArray(a) ? a[i] : undefined;
+    if (zero === false) return v === true;
+    return Number.isFinite(v) ? v : 0;
+  });
+  const migrate = (p) => ({
+    time: fixArr(p && p.time, TOTAL), clicks: fixArr(p && p.clicks, TOTAL),
+    quizCorrect: fixArr(p && p.quizCorrect, TOTAL), quizTotal: fixArr(p && p.quizTotal, TOTAL),
+    cardsRead: fixArr(p && p.cardsRead, TOTAL), cardsTotal: fixArr(p && p.cardsTotal, TOTAL),
+    visited: fixArr(p && p.visited, TOTAL, false),
+    wrong: (p && p.wrong && typeof p.wrong === 'object') ? p.wrong : {}
+  });
 
   const [lang, setLang] = useState('en');
   const [isDark, setIsDark] = useState(true);
   const [module, setModule] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [ttsState, setTtsState] = useState('idle');
-  const [prog, setProg] = useState(() => loadLS(LS_KEY, {
-    time: Array(TOTAL).fill(0), clicks: Array(TOTAL).fill(0),
-    quizCorrect: Array(TOTAL).fill(0), quizTotal: Array(TOTAL).fill(0),
-    cardsRead: Array(TOTAL).fill(0), cardsTotal: Array(TOTAL).fill(0),
-    visited: Array(TOTAL).fill(false), wrong: {}
-  }));
+  const [prog, setProg] = useState(() => migrate(loadLS(LS_KEY, null)));
   const menuRef = useRef(null);
   const t = dict[lang];
 
@@ -1739,10 +1758,13 @@ function App() {
     <div className="space-y-8 animate-fade-in">
       <div>
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-400 mb-2">
-          {lang === 'zh' ? '國立暨南國際大學 · 通識教育' : 'National Chi Nan University · General Education'}
+          {t.dept} · {t.course_code}
         </p>
-        <h1 className="font-serif font-black text-3xl sm:text-4xl md:text-5xl leading-tight text-[#004030] dark:text-[#D8C3A5]">{t.m0_title}</h1>
-        <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 italic font-serif">{t.subtitle}</p>
+        <h1 className="font-serif font-black text-2xl sm:text-3xl md:text-4xl leading-tight text-[#004030] dark:text-[#D8C3A5]">{t.course_zh}</h1>
+        <p className="mt-2 font-serif font-bold text-base sm:text-lg leading-snug text-slate-700 dark:text-slate-200">{t.course_en}</p>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{t.teacher}</p>
+        <p className="mt-4 pt-4 border-t border-slate-300 dark:border-slate-700 font-serif font-bold text-lg sm:text-xl text-[#004030] dark:text-[#D8C3A5]">{t.m0_title}</p>
+        <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 italic font-serif">{t.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">{t.m0_stats.map((s, i) => <Stat key={i} v={s.val} l={s.label} />)}</div>
@@ -2031,12 +2053,7 @@ function App() {
           <button onClick={() => {
             if (!window.confirm(t.ana_clear_confirm)) return;
             try { localStorage.removeItem(LS_KEY); } catch (e) {}
-            setProg({
-              time: Array(TOTAL).fill(0), clicks: Array(TOTAL).fill(0),
-              quizCorrect: Array(TOTAL).fill(0), quizTotal: Array(TOTAL).fill(0),
-              cardsRead: Array(TOTAL).fill(0), cardsTotal: Array(TOTAL).fill(0),
-              visited: Array(TOTAL).fill(false), wrong: {}
-            });
+            setProg(migrate(null));
           }} className="px-4 py-2 text-sm font-bold text-red-700 dark:text-red-400 border border-red-400 dark:border-red-700 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30">
             {t.ana_clear}
           </button>
